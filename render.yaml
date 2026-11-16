@@ -23,6 +23,9 @@ services:
       # They are separate from the private ADMIN/DOCTOR/OPERATOR accounts below, whose passwords Render generates.
       - key: DEMO_ACCOUNTS
         value: "1"
+      # JSON API for the frontend on GitHub Pages (https://etner249.github.io/astra-vital/): exact CORS origin
+      - key: CORS_ORIGINS
+        value: https://etner249.github.io
       - key: ADMIN_EMAIL
         value: admin@nyxara.example
       - key: ADMIN_PASSWORD

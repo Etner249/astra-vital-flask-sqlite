@@ -74,7 +74,9 @@ def create_app(config_object=None, **overrides):
             if code == 500:
                 db.session.rollback()
             if request.path.startswith("/api/"):
-                return {"error": title, "status": code}, code
+                desc = getattr(e, "description", None)
+                generic = not desc or desc.startswith(("You don't have", "The server", "The requested URL", "The method is not", "The browser"))
+                return {"error": title if generic else desc, "status": code}, code
             desc = getattr(e, "description", None)
             custom = desc if code == 403 and desc and not desc.startswith("You don't have the permission") else None
             return render_template("errors/error.html", code=code, title=title, message=custom), code

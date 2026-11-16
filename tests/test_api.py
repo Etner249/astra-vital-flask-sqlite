@@ -248,3 +248,18 @@ def test_api_post_is_csrf_exempt_but_needs_bearer(app, client, tok):
     assert client.post(f"{API}/measurements", json={"astronaut_id": 1, "heart_rate": 70}, headers=tok("operator")).status_code == 201
     # HTML forms still require CSRF
     client.post("/login", data={"email": "admin@nyxara.example", "password": PW["admin"]})
+
+
+def test_api_errors_are_json_with_explanation(app, client):
+    with app.app_context():
+        ensure_demo_accounts()
+        a = Astronaut(code="AV-SYN-8", full_name="Synthetic Eight", is_synthetic=True)
+        db.session.add(a)
+        db.session.commit()
+        aid = a.id
+    acc = next(x for x in DEMO_ACCOUNTS if x["role"] == "admin")
+    t = client.post(f"{API}/auth/login", json={"email": acc["email"], "password": acc["password"]}).get_json()["token"]
+    r = client.delete(f"{API}/astronauts/{aid}", headers={"Authorization": f"Bearer {t}"})
+    assert r.status_code == 403 and "synthetic reference data" in r.get_json()["error"]
+    r = client.get(f"{API}/no-such-endpoint", headers={"Authorization": f"Bearer {t}"})
+    assert r.status_code == 404 and r.is_json

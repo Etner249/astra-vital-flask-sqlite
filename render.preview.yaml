@@ -1,0 +1,24 @@
+# PREVIEW backend for the GitHub Pages integration tests (branch api-integration).
+# Production stays on render.yaml (service astra-vital-academic). Free plan: SQLite is recreated on every start.
+services:
+  - type: web
+    name: astra-vital-api-preview
+    runtime: python
+    plan: free
+    branch: api-integration
+    buildCommand: pip install -r requirements.txt
+    startCommand: flask --app wsgi bootstrap && gunicorn -c gunicorn.conf.py wsgi:app
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: FLASK_ENV_MODE
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/instance/astra_vital.db
+      - key: SEED_DEMO
+        value: "1"
+      - key: DEMO_ACCOUNTS
+        value: "1"
+      - key: CORS_ORIGINS
+        value: https://etner249.github.io
