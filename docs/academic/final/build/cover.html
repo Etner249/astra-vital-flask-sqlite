@@ -1,0 +1,60 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:794px;height:1123px;font-family:Montserrat,'Inter',Arial,sans-serif;overflow:hidden}
+.page{position:relative;width:794px;height:1123px;background:radial-gradient(ellipse 90% 60% at 85% 38%,#16305c 0%,#0a1630 45%,#050b1a 100%);color:#fff;overflow:hidden}
+.stars{position:absolute;inset:0}
+.top{position:absolute;top:0;left:0;right:0;height:170px;background:#A71A3A;display:flex;align-items:center;padding:0 56px;gap:28px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.top img{height:118px}
+.top .fac{border-left:1px solid rgba(255,255,255,.45);padding-left:26px;font-size:11.5px;letter-spacing:2.6px;font-weight:600;line-height:1.75;text-transform:uppercase;color:#fbe9ee}
+.top .fac b{display:block;font-size:10px;letter-spacing:3.5px;font-weight:400;opacity:.8}
+.notch{position:absolute;top:170px;left:56px;width:120px;height:5px;background:#36D6E7}
+.orbit{position:absolute;right:-210px;top:200px;width:720px;height:720px}
+.kicker{position:absolute;top:262px;left:56px;font-size:12px;letter-spacing:5px;font-weight:700;color:#36D6E7}
+.kicker:before{content:'';display:inline-block;width:34px;height:2px;background:#36D6E7;vertical-align:middle;margin-right:14px}
+.title{position:absolute;top:296px;left:52px;font-weight:900;font-size:96px;line-height:.92;letter-spacing:2px}
+.title span{display:block;background:linear-gradient(90deg,#ffffff 0%,#bfe9ff 60%,#36D6E7 100%);-webkit-background-clip:text;color:transparent}
+.tag{position:absolute;top:500px;left:56px;font-size:12px;letter-spacing:4.5px;color:#7fb4ff;font-weight:600}
+.sub{position:absolute;top:560px;left:56px;width:470px;font-size:23px;font-weight:700;line-height:1.3}
+.sub small{display:block;margin-top:12px;font-size:14px;font-weight:400;color:#b7c4dc;line-height:1.55}
+.chips{position:absolute;top:712px;left:56px;display:flex;gap:10px}
+.chip{border:1px solid rgba(54,214,231,.5);color:#cdf6fb;font-size:10.5px;letter-spacing:1.8px;font-weight:600;padding:7px 13px;border-radius:30px;background:rgba(54,214,231,.07)}
+.card{position:absolute;left:56px;right:56px;top:810px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:26px 30px;display:grid;grid-template-columns:1fr 1fr;gap:20px 34px;backdrop-filter:blur(6px)}
+.card:before{content:'';position:absolute;left:0;top:22px;bottom:22px;width:4px;background:#A71A3A;border-radius:0 4px 4px 0}
+.k{font-size:9.5px;letter-spacing:3px;font-weight:700;color:#ff8fa8;margin-bottom:6px}
+.v{font-size:14.5px;font-weight:600;line-height:1.5}
+.v.small{font-size:13px;font-weight:400;color:#dbe4f3}
+.foot{position:absolute;left:0;right:0;bottom:0;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 56px;background:#A71A3A;font-size:11px;letter-spacing:4px;font-weight:700}
+.foot i{font-style:normal;font-weight:400;opacity:.85}
+</style></head><body><div class="page">
+<svg class="stars" viewBox="0 0 794 1123" id="st"></svg>
+<svg class="orbit" viewBox="0 0 720 720">
+ <defs><radialGradient id="pl" cx="38%" cy="35%"><stop offset="0" stop-color="#2a6fd6"/><stop offset=".55" stop-color="#0e2c63"/><stop offset="1" stop-color="#050b1a"/></radialGradient>
+ <radialGradient id="glow"><stop offset=".6" stop-color="#36D6E7" stop-opacity=".25"/><stop offset="1" stop-color="#36D6E7" stop-opacity="0"/></radialGradient></defs>
+ <circle cx="360" cy="360" r="250" fill="url(#glow)"/>
+ <circle cx="360" cy="360" r="205" fill="url(#pl)"/>
+ <ellipse cx="360" cy="360" rx="330" ry="92" fill="none" stroke="#36D6E7" stroke-opacity=".55" stroke-width="1.5" transform="rotate(-24 360 360)"/>
+ <ellipse cx="360" cy="360" rx="300" ry="300" fill="none" stroke="#7fb4ff" stroke-opacity=".18" stroke-width="1" stroke-dasharray="3 7"/>
+ <ellipse cx="360" cy="360" rx="355" ry="355" fill="none" stroke="#7fb4ff" stroke-opacity=".10" stroke-width="1"/>
+ <path d="M300 365h40l28-62 40 132 34-96 22 30h146" fill="none" stroke="#E8EEF8" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" opacity=".95"/>
+</svg>
+<div class="top"><img src="uprit.png"><div class="fac"><b>Facultad de</b>Ingeniería de Sistemas<br>e Inteligencia Artificial</div></div>
+<div class="notch"></div>
+<div class="kicker">TRABAJO FINAL DEL CURSO</div>
+<div class="title"><span>ASTRA</span><span>VITAL</span></div>
+<div class="tag">INTELLIGENT ASTRONAUT HEALTH MONITORING</div>
+<div class="sub">Desarrollo de una aplicación web con Python Flask y SQLite<small>Sistema web de monitoreo de salud de astronautas para misiones espaciales de larga duración.</small></div>
+<div class="chips"><span class="chip">PYTHON · FLASK</span><span class="chip">SQLITE</span><span class="chip">API REST</span><span class="chip">NASA SPACE APPS 2026</span></div>
+<div class="card">
+ <div><div class="k">CURSO</div><div class="v">Programación y Desarrollo Web</div></div>
+ <div><div class="k">DOCENTE</div><div class="v">Mg. Charlen Máximo Calero Huamán</div></div>
+ <div><div class="k">INTEGRANTES</div><div class="v small">Etner Therry Rios Vasquez<br>Jeanfranco Alfredo Ibarra Kocfú</div></div>
+ <div><div class="k">EQUIPO</div><div class="v">NYXARA NOVA</div><div class="v small">NASA Space Apps Challenge 2026</div></div>
+</div>
+<div class="foot"><span>TRUJILLO · PERÚ</span><i>UNIVERSIDAD PRIVADA DE TRUJILLO</i><span>NOVIEMBRE 2026</span></div>
+</div>
+<script>
+let s='',r=7;const R=()=>{r=(r*16807)%2147483647;return r/2147483647};
+for(let i=0;i<190;i++){const x=R()*794,y=175+R()*890,a=R();s+=`<circle cx="${x}" cy="${y}" r="${a>.93?1.6:a>.7?1:.6}" fill="#fff" opacity="${.25+R()*.6}"/>`}
+document.getElementById('st').innerHTML=s;
+</script></body></html>

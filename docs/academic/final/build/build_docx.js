@@ -90,7 +90,7 @@ if (COVER.cycle_section) infoRows.push(['Ciclo / sección', [COVER.cycle_section
 infoRows.push(['Integrantes', COVER.cover_members || COVER.members], ['Equipo', ['NYXARA NOVA — NASA Space Apps Challenge 2026']]);
 const info = new Table({ width: { size: 8100, type: WidthType.DXA }, columnWidths: [2300, 5800], alignment: AlignmentType.CENTER, borders: noB,
   rows: infoRows.map(([k, v]) => infoRow(k, v.map(x => x || '[PENDIENTE]'))) });
-const cover = [
+const coverOld = [
   band,
   cp([T('TRABAJO FINAL DEL CURSO', { size: 22, bold: true, color: RED, characterSpacing: 60 })], { spacing: { before: 1100, after: 120 } }),
   rule(900),
@@ -102,6 +102,10 @@ const cover = [
 const coverFooter = new Footer({ children: [new Table({ width: { size: PAGE_W, type: WidthType.DXA }, columnWidths: [PAGE_W], borders: noB,
   rows: [new TableRow({ height: { value: 760, rule: 'exact' }, children: [new TableCell({ width: { size: PAGE_W, type: WidthType.DXA }, borders: noB, shading: { type: ShadingType.CLEAR, fill: RED }, verticalAlign: 'center', margins: { top: 0, bottom: 0, left: 0, right: 0 },
     children: [cp([T('TRUJILLO, PERÚ  ·  NOVIEMBRE 2026', { size: 18, bold: true, color: 'FFFFFF', characterSpacing: 60 })])] })] })] })] });
+
+const cover = [new Paragraph({ spacing: { before: 0, after: 0 }, children: [new ImageRun({ type: 'jpg', data: fs.readFileSync(path.join(__dirname, 'cover_full.jpg')), transformation: { width: 794, height: 1123 },
+  floating: { horizontalPosition: { relative: D.HorizontalPositionRelativeFrom.PAGE, offset: 0 }, verticalPosition: { relative: D.VerticalPositionRelativeFrom.PAGE, offset: 0 }, behindDocument: true, allowOverlap: true, wrap: { type: D.TextWrappingType.NONE } },
+  altText: { title: 'Portada', description: 'Portada: Universidad Privada de Trujillo, ASTRA VITAL, trabajo final del curso Programación y Desarrollo Web', name: 'portada' } })] })];
 
 // ======================================================= BODY
 const roleRows = [
@@ -499,7 +503,7 @@ const doc = new Document({
     { reference: 'num', levels: [{ level: 0, format: LevelFormat.DECIMAL, text: '%1.', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 300 } } } }] },
   ] },
   sections: [
-    { properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 0, right: 0, bottom: 900, left: 0, footer: 0, header: 0 } } }, footers: { default: coverFooter }, children: cover },
+    { properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 0, right: 0, bottom: 0, left: 0, footer: 0, header: 0 } } }, children: cover },
     { properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1440, right: 1440, bottom: 1300, left: 1440 }, pageNumbers: { start: 1 } } },
       headers: { default: new Header({ children: [new Paragraph({ border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'C9D3E0', space: 2 } }, tabStops: [{ type: TabStopType.RIGHT, position: CW }], children: [new TextRun({ text: 'ASTRA VITAL — Trabajo final · Python Flask + SQLite', size: 16, color: GREY }), new TextRun({ text: '\tEquipo NYXARA NOVA', size: 16, color: GREY })] })] }) },
       footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'Página ', size: 16, color: GREY }), new TextRun({ children: [PageNumber.CURRENT], size: 16, color: GREY })] })] }) },
