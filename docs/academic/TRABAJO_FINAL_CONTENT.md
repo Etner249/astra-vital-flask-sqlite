@@ -211,6 +211,8 @@ Todas las capturas se tomaron de la aplicación real en ejecución (navegador Ch
 {{fig:14b_render_logs_first_deploy.jpg|Logs del primer despliegue: creación de usuarios y datos de demostración|half}}
 {{fig:14c_render_redeploy_db_recreated.jpg|Nuevo despliegue: la base SQLite se crea desde cero|half}}
 {{fig:14d_render_restart_db_recreated.jpg|Reinicio del servicio: la base SQLite se crea desde cero|half}}
+{{fig:23a_render_login_evaluator_access.jpg|Producción: pantalla de login con NASA Evaluator Access|half}}
+{{fig:23b_render_logs_demo_accounts.jpg|Producción: logs del despliegue con las cuentas demo creadas|half}}
 {{fig:15_render_after_login.png|Aplicación desplegada después de iniciar sesión|optional}}
 
 # Enlace al repositorio GitHub

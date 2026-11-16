@@ -53,4 +53,5 @@ Con disco montado, `bootstrap` detecta la base existente ("Existing SQLite datab
 ## Verificación (16/11/2026)
 1. `GET /login` en https://astra-vital-academic.onrender.com responde 200 (health check de Render cada 5 s y navegador) — `evidence/14a_render_deployed_login.jpg`.
 2. Primer deploy, redeploy y reinicio muestran en los logs que la base SQLite se crea desde cero cada vez (tabla anterior). **Conclusión: en el plan gratuito los datos no persisten; la aplicación siempre arranca en estado de demostración.**
-3. Inicio de sesión en producción: realizado por el propietario de la cuenta con la contraseña generada por Render (nunca escrita en el repositorio) — `evidence/15_render_after_login.png`.
+3. Actualización "NASA Evaluator Access" (commit `3df2723`, deploy 11:23–11:24): log "Demo accounts ready: 3 created, 0 repaired, 3 total"; la pantalla `/login` en producción muestra las tres credenciales de demostración, las instrucciones y la advertencia; el botón Copiar funciona ("Copiado ✓") — `evidence/23a_render_login_evaluator_access.jpg`, `evidence/23b_render_logs_demo_accounts.jpg`.
+4. Inicio de sesión en producción: realizado por el propietario de la cuenta con la contraseña generada por Render (nunca escrita en el repositorio) — `evidence/15_render_after_login.png`.
