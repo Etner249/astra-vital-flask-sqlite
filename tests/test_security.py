@@ -31,7 +31,7 @@ def test_input_validation_measurement(as_role, app):
     r = c.post("/measurements/new", data={"astronaut_id": 1, "measured_at": "2026-11-10T08:00", "heart_rate": 900, "systolic_bp": 80, "diastolic_bp": 95})
     assert b"Number must be between 25 and 230" in r.data and b"Diastolic pressure must be lower than systolic" in r.data
     r = c.post("/measurements/new", data={"astronaut_id": 1, "measured_at": "2026-11-10T08:00"})
-    assert b"Enter at least one vital sign" in r.data
+    assert b"Enter at least one indicator" in r.data
     from app.models import HealthMeasurement
     with app.app_context():
         assert HealthMeasurement.query.count() == 0

@@ -6,6 +6,9 @@
 {{ field(form.heart_rate, inputmode="numeric") }}{{ field(form.respiratory_rate, inputmode="numeric") }}
 {{ field(form.systolic_bp, inputmode="numeric") }}{{ field(form.diastolic_bp, inputmode="numeric") }}
 {{ field(form.spo2, inputmode="decimal") }}{{ field(form.temperature, inputmode="decimal") }}
+{{ field(form.sleep_hours, inputmode="decimal") }}{{ field(form.exercise_min, inputmode="numeric") }}
+{{ field(form.fatigue, inputmode="numeric") }}{{ field(form.mood, inputmode="numeric") }}
+{{ field(form.glucose, inputmode="numeric") }}
 {{ field(form.notes, cls='full', rows=3) }}</div>
 <div class="hint">Values are entered manually; this prototype does not connect to sensors. Saving re-runs the rule engine and stores any alerts in SQLite.</div>
 <div class="row" style="margin-top:12px">{{ form.submit(class="btn primary") }}<a class="btn" href="{{ url_for('crud.measurements') }}">Cancel</a></div></form></div>
@@ -14,5 +17,9 @@
 <tr><td>Blood pressure</td><td class="num">&lt;120/&lt;80 mmHg</td><td class="dim">ACC/AHA 2017</td></tr>
 <tr><td>SpO2</td><td class="num">95–100 %</td><td class="dim">WHO 2011</td></tr>
 <tr><td>Temperature</td><td class="num">fever ≥ 38.0 °C</td><td class="dim">CDC</td></tr>
-<tr><td>Respiratory rate</td><td class="num">12–20 /min</td><td class="dim">clinical references</td></tr></tbody></table>
+<tr><td>Respiratory rate</td><td class="num">12–20 /min</td><td class="dim">clinical references</td></tr>
+<tr><td>Sleep</td><td class="num">≥ 7 h</td><td class="dim">AASM/SRS</td></tr>
+<tr><td>Exercise</td><td class="num">~120 min/day</td><td class="dim">NASA</td></tr>
+<tr><td>Fatigue (Samn-Perelli)</td><td class="num">1–4</td><td class="dim">USAF SAM</td></tr>
+<tr><td>Glucose</td><td class="num">70–99 mg/dL</td><td class="dim">ADA</td></tr></tbody></table>
 <p class="hint">Educational prototype. Alerts are explanations, not diagnoses.</p></div></div>{% endblock %}

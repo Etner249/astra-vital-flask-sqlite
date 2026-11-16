@@ -33,3 +33,16 @@ def test_consolidation_one_alert_per_metric():
 
 def test_overall_status():
     assert overall_status({"followup", "priority"}) == "priority" and overall_status(set()) == "nominal"
+
+
+def test_original_indicators_rules():
+    """Rules ported from the original src/engine.js (NASA Space Apps 2026 app)."""
+    hist = [m(sleep_hours=6.2, exercise_min=100, measured_at=T - timedelta(days=i)) for i in (2, 1)]
+    by = {a.metric: a.level for a in analyze_measurement(m(sleep_hours=6.0, exercise_min=95), hist)}
+    assert by["sleep_hours"] == "followup" and by["exercise_min"] == "followup"
+    by = {a.metric: a.level for a in analyze_measurement(m(sleep_hours=6.5), [])}
+    assert by["sleep_hours"] == "info"
+    assert analyze_measurement(m(glucose=50), [])[0].level == "priority"
+    assert analyze_measurement(m(glucose=65), [])[0].level == "followup"
+    assert analyze_measurement(m(fatigue=5), [])[0].level == "followup"
+    assert analyze_measurement(m(sleep_hours=7.5, exercise_min=130, fatigue=2, mood=4, glucose=90), []) == []

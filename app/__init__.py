@@ -5,7 +5,7 @@ university adaptation. Educational prototype — not a medical device.
 """
 import os
 import click
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from .extensions import db, login_manager, csrf
@@ -44,6 +44,8 @@ def create_app(config_object=None, **overrides):
     app.register_blueprint(auth.bp)
     app.register_blueprint(main.bp)
     app.register_blueprint(crud.bp)
+    from . import api
+    app.register_blueprint(api.bp)
 
     from .decorators import can, PERMISSIONS
     from .models import ROLE_LABELS
@@ -51,6 +53,12 @@ def create_app(config_object=None, **overrides):
     from .demo import mask_email as _mask, is_demo_user as _isdemo
     app.jinja_env.filters["mask_email"] = _mask
     app.jinja_env.globals["is_demo_user"] = _isdemo
+
+    def _other(m):
+        parts = [("Sleep", m.sleep_hours, "h"), ("Exercise", m.exercise_min, "min"), ("Fatigue", m.fatigue, "/7"),
+                 ("Mood", m.mood, "/5"), ("Glucose", m.glucose, "mg/dL")]
+        return " · ".join(f"{k} {v}{u if u.startswith('/') else ' ' + u}" for k, v, u in parts if v is not None) or "—"
+    app.jinja_env.filters["other_indicators"] = _other
 
     @app.after_request
     def security_headers(resp):
@@ -61,10 +69,12 @@ def create_app(config_object=None, **overrides):
                                 "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-ancestors 'none'")
         return resp
 
-    for code, title in ((400, "Bad request"), (403, "Access denied"), (404, "Not found"), (500, "Server error")):
+    for code, title in ((400, "Bad request"), (403, "Access denied"), (404, "Not found"), (405, "Method not allowed"), (500, "Server error")):
         def handler(e, code=code, title=title):
             if code == 500:
                 db.session.rollback()
+            if request.path.startswith("/api/"):
+                return {"error": title, "status": code}, code
             desc = getattr(e, "description", None)
             custom = desc if code == 403 and desc and not desc.startswith("You don't have the permission") else None
             return render_template("errors/error.html", code=code, title=title, message=custom), code

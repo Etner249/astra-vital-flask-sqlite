@@ -71,14 +71,21 @@ class MeasurementForm(FlaskForm):
     spo2 = FloatField("SpO2 (%)", validators=[Optional(), NumberRange(50, 100)])
     temperature = FloatField("Body temperature (°C)", validators=[Optional(), NumberRange(32, 43)])
     respiratory_rate = IntegerField("Respiratory rate (breaths/min)", validators=[Optional(), NumberRange(4, 60)])
+    sleep_hours = FloatField("Sleep, last period (h)", validators=[Optional(), NumberRange(0, 16)])
+    exercise_min = IntegerField("Exercise completed (min)", validators=[Optional(), NumberRange(0, 400)])
+    fatigue = IntegerField("Fatigue, Samn-Perelli (1–7)", validators=[Optional(), NumberRange(1, 7)])
+    mood = IntegerField("Mood / well-being (1–5)", validators=[Optional(), NumberRange(1, 5)])
+    glucose = IntegerField("Blood glucose (mg/dL)", validators=[Optional(), NumberRange(20, 600)])
     notes = TextAreaField("Observations", validators=[Optional(), Length(max=1000)])
     submit = SubmitField("Save measurement")
 
     def validate(self, extra_validators=None):
         ok = super().validate(extra_validators)
-        vals = [self.heart_rate.data, self.systolic_bp.data, self.diastolic_bp.data, self.spo2.data, self.temperature.data, self.respiratory_rate.data]
+        vals = [self.heart_rate.data, self.systolic_bp.data, self.diastolic_bp.data, self.spo2.data, self.temperature.data,
+                self.respiratory_rate.data, self.sleep_hours.data, self.exercise_min.data, self.fatigue.data, self.mood.data,
+                self.glucose.data]
         if all(v is None for v in vals):
-            self.heart_rate.errors.append("Enter at least one vital sign.")
+            self.heart_rate.errors.append("Enter at least one indicator.")
             ok = False
         if (self.systolic_bp.data is None) != (self.diastolic_bp.data is None):
             self.diastolic_bp.errors.append("Enter both systolic and diastolic values.")

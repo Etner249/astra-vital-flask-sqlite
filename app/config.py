@@ -22,6 +22,9 @@ class Config:
     PERMANENT_SESSION_LIFETIME = 60 * 60 * 8
     # Public demo accounts (NASA Evaluator Access) shown on the login page and seeded by `flask bootstrap`.
     DEMO_ACCOUNTS_ENABLED = os.environ.get("DEMO_ACCOUNTS", "1") == "1"
+    # JSON API for the GitHub Pages frontend: exact origins allowed by CORS (comma-separated, scheme+host only)
+    CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "https://etner249.github.io")
+    API_TOKEN_HOURS = int(os.environ.get("API_TOKEN_HOURS", "8"))
 
 
 class ProductionConfig(Config):

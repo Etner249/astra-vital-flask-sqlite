@@ -44,9 +44,16 @@ def seed_demo(days=21):
                 spo2 = 89.0
             if scenario == "fever" and d >= days - 2:
                 temp, hr, rr = (38.3 if d == days - 1 else 37.6), hr + 12, rr + 4
+            # indicators of the original ASTRA VITAL app (same drift scenario as demoRecords() in src/app.js)
+            sleep = round(max(3.5, g(6.9 - late * 0.27 if scenario == "drift" else 7.3, 0.3)), 1)
+            fatigue = int(min(7, max(1, round(g(2.6 + late * 0.45, 0.6)))))
+            mood = int(min(5, max(1, round(g(4.2 - late * 0.17, 0.4)))))
+            exercise = int(round(max(0, g(85 if (scenario == "drift" and d >= days - 4) else 126, 9))))
+            glucose = int(round(g(88, 5))) if d % 5 == 0 else None
             m = HealthMeasurement(astronaut_id=a.id, measured_at=start + timedelta(days=d, minutes=rnd.randint(0, 40)),
                                   heart_rate=hr, systolic_bp=sbp, diastolic_bp=max(40, min(dbp, sbp - 15)), spo2=spo2,
-                                  temperature=temp, respiratory_rate=rr, source="synthetic_demo", is_synthetic=True,
+                                  temperature=temp, respiratory_rate=rr, sleep_hours=sleep, exercise_min=exercise,
+                                  fatigue=fatigue, mood=mood, glucose=glucose, source="synthetic_demo", is_synthetic=True,
                                   notes="SYNTHETIC demo measurement")
             db.session.add(m)
             db.session.flush()

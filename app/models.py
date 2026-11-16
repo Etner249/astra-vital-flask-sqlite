@@ -98,6 +98,12 @@ class HealthMeasurement(TimestampMixin, db.Model):
     spo2 = db.Column(db.Float)                      # %
     temperature = db.Column(db.Float)               # °C
     respiratory_rate = db.Column(db.Integer)        # breaths/min
+    # indicators of the original ASTRA VITAL (NASA Space Apps 2026) app
+    sleep_hours = db.Column(db.Float)               # h, last sleep period
+    exercise_min = db.Column(db.Integer)            # min of prescribed exercise
+    fatigue = db.Column(db.Integer)                 # Samn-Perelli 1–7
+    mood = db.Column(db.Integer)                    # 1–5 self-report
+    glucose = db.Column(db.Integer)                 # mg/dL
     notes = db.Column(db.Text)
     source = db.Column(db.String(40), nullable=False, default="manual")  # manual | synthetic_demo
     is_synthetic = db.Column(db.Boolean, nullable=False, default=False)
@@ -113,7 +119,15 @@ class HealthMeasurement(TimestampMixin, db.Model):
         CheckConstraint("spo2 IS NULL OR spo2 BETWEEN 50 AND 100", name="spo2_range"),
         CheckConstraint("temperature IS NULL OR temperature BETWEEN 32 AND 43", name="temp_range"),
         CheckConstraint("respiratory_rate IS NULL OR respiratory_rate BETWEEN 4 AND 60", name="rr_range"),
+        CheckConstraint("sleep_hours IS NULL OR sleep_hours BETWEEN 0 AND 16", name="sleep_range"),
+        CheckConstraint("exercise_min IS NULL OR exercise_min BETWEEN 0 AND 400", name="exercise_range"),
+        CheckConstraint("fatigue IS NULL OR fatigue BETWEEN 1 AND 7", name="fatigue_range"),
+        CheckConstraint("mood IS NULL OR mood BETWEEN 1 AND 5", name="mood_range"),
+        CheckConstraint("glucose IS NULL OR glucose BETWEEN 20 AND 600", name="glucose_range"),
     )
+
+    VITAL_FIELDS = ("heart_rate", "systolic_bp", "diastolic_bp", "spo2", "temperature", "respiratory_rate",
+                    "sleep_hours", "exercise_min", "fatigue", "mood", "glucose")
 
 
 class HealthAlert(TimestampMixin, db.Model):
@@ -155,4 +169,18 @@ class AuditLog(db.Model):
     entity_id = db.Column(db.Integer)
     details = db.Column(db.Text)
     ip_address = db.Column(db.String(45))
+    user = db.relationship("User")
+
+
+class ApiToken(db.Model):
+    """Bearer tokens for the JSON API used by the GitHub Pages frontend.
+    Only a SHA-256 hash of the token is stored; tokens expire and are revoked on logout."""
+    __tablename__ = "api_tokens"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    token_hash = db.Column(db.String(64), nullable=False, unique=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=utcnow)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    revoked_at = db.Column(db.DateTime)
+    last_used_at = db.Column(db.DateTime)
     user = db.relationship("User")
