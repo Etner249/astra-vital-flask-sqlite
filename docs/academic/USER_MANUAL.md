@@ -4,10 +4,27 @@ Aplicación: https://astra-vital-academic.onrender.com (la primera carga puede t
 
 ## 1. Acceso
 - **Iniciar sesión:** correo y contraseña en `/login`. Los mensajes de error son genéricos (no revelan si el correo existe).
-- **Crear cuenta:** enlace "Create one". Toda cuenta nueva recibe el rol **Operador**; solo un Administrador puede cambiar roles.
+- **Crear cuenta:** enlace "Crear una". Toda cuenta nueva recibe el rol **Operador**; solo un Administrador puede cambiar roles.
 - **Cerrar sesión:** botón "Sign out" del menú (envía un POST protegido con CSRF).
 - **Cambiar contraseña:** menú "Settings" (mínimo 10 caracteres, letras y números).
-- Las cuentas iniciales de Render se crean con contraseñas generadas por Render; el propietario las consulta en Render → Environment.
+- Las cuentas privadas de administración de Render usan contraseñas generadas por Render; solo el propietario las consulta en Render → Environment y **no** se muestran en la aplicación.
+
+### 1.1 NASA Evaluator Access (cuentas públicas de demostración)
+La pantalla de login tiene la sección **"NASA Evaluator Access · Credenciales de demostración"** con una cuenta por rol:
+
+| Rol | Correo | Contraseña |
+|---|---|---|
+| ADMINISTRADOR | `admin.demo@astravital.example` | `AstraDemo-Admin-2026` |
+| MÉDICO / ESPECIALISTA | `medico.demo@astravital.example` | `AstraDemo-Medico-2026` |
+| OPERADOR | `operador.demo@astravital.example` | `AstraDemo-Operador-2026` |
+
+Pasos: (1) elige la cuenta; (2) pulsa **Usar esta cuenta** (rellena el formulario) o usa los botones **Copiar** del correo y la contraseña; (3) pulsa **Ingresar**. En la barra superior aparece la etiqueta **PUBLIC DEMO ACCOUNT**.
+
+Son cuentas compartidas: **no ingreses datos personales, médicos ni reales**. Por seguridad, en el servidor se limitan así:
+- Usuarios: solo lectura (no crear, editar, eliminar ni cambiar roles; los correos de cuentas no públicas aparecen enmascarados).
+- Ajustes: no pueden cambiar su contraseña.
+- Datos de referencia: no pueden eliminar astronautas, misiones ni mediciones sintéticas del *seed*; sí pueden crear registros nuevos y eliminarlos para probar el CRUD completo.
+- Auditoría (solo administrador demo): las direcciones IP y los correos de intentos fallidos se ocultan.
 
 ## 2. Roles y permisos
 | Acción | Administrador | Doctor/Especialista | Operador |

@@ -31,7 +31,7 @@ SQLite (archivo; PRAGMA foreign_keys=ON, journal WAL)
 | `app/services.py` | Auditoría y generación/persistencia de alertas |
 | `app/seed.py` | Datos sintéticos de demostración |
 | `app/templates/`, `app/static/` | Vistas Jinja2, CSS y JS (reutilizados del proyecto original) |
-| `tests/` | 90 pruebas pytest |
+| `tests/` | 101 pruebas pytest |
 | `render.yaml`, `gunicorn.conf.py`, `Procfile` | Despliegue |
 
 ## Tecnologías

@@ -27,7 +27,7 @@ Variables (ver `.env.example`): `SECRET_KEY`, `DATABASE_PATH`, `FLASK_ENV_MODE`.
    - health check: `/login`
    - `SECRET_KEY`, `ADMIN_PASSWORD`, `DOCTOR_PASSWORD`, `OPERATOR_PASSWORD`: `generateValue: true` (Render genera valores aleatorios; **no están en GitHub**).
 3. Las contraseñas generadas se consultan en Render → servicio → **Environment** (solo el propietario de la cuenta).
-4. `bootstrap` crea las tablas, crea los 3 usuarios iniciales si no existen y carga los datos sintéticos (`SEED_DEMO=1`).
+4. `bootstrap` crea las tablas, crea los 3 usuarios privados si no existen, carga los datos sintéticos (`SEED_DEMO=1`) y crea o repara las 3 **cuentas públicas de demostración** (`DEMO_ACCOUNTS=1`, log "Demo accounts ready: … 3 total"). Como en el plan gratuito la base se recrea en cada arranque, las cuentas demo siempre existen y funcionan tras un reinicio o despliegue.
 
 ## Persistencia de SQLite en Render (resultado verificado)
 El plan gratuito de Render usa un sistema de archivos **efímero** y no admite discos persistentes. Por decisión del equipo se usó el plan gratuito, por lo tanto:

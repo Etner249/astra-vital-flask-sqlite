@@ -24,6 +24,7 @@ health_measurements (1) ───< health_alerts.measurement_id (SET NULL)
 | role | VARCHAR(20) | NOT NULL, CHECK IN ('admin','doctor','operator') |
 | is_active_account | BOOLEAN | NOT NULL |
 | last_login_at | DATETIME | |
+| is_demo | BOOLEAN | NOT NULL DEFAULT 0 — marca las 3 cuentas públicas de demostración |
 | created_at, updated_at | DATETIME | NOT NULL |
 
 ### missions
@@ -103,6 +104,9 @@ health_measurements (1) ───< health_alerts.measurement_id (SET NULL)
 
 ## Datos iniciales
 `flask seed-demo` (o `bootstrap` con `SEED_DEMO=1`) crea 2 misiones ficticias, 4 astronautas ficticios (AV-DEMO-01…04) y 21 días de mediciones **sintéticas** (`is_synthetic=1`, `source='synthetic_demo'`), y ejecuta el motor para generar alertas reales sobre esos datos.
+
+## Cuentas públicas de demostración
+`flask seed-demo-accounts` (y `bootstrap` con `DEMO_ACCOUNTS=1`) ejecuta `ensure_demo_accounts()` (`app/demo.py`): busca cada cuenta por correo (UNIQUE) y la crea si no existe; si existe, restaura rol, estado activo, `is_demo=1` y contraseña. Es **idempotente**: ejecutarlo varias veces nunca duplica filas (comprobado: segunda ejecución → "0 created, 0 repaired, 3 total"). Las contraseñas se guardan con hash como cualquier otra.
 
 ## Persistencia y limitaciones de SQLite
 - En desarrollo el archivo vive en `instance/astra_vital.db` y persiste entre reinicios.

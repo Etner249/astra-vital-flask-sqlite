@@ -65,7 +65,7 @@ Desarrollar una aplicación web con Python Flask y SQLite que permita registrar 
 | Autenticación | Flask-Login 0.6.3 + Werkzeug (scrypt) | Sesiones y hash de contraseñas |
 | Formularios | Flask-WTF 1.3.0 / WTForms 3.3.2 / email-validator | Validación y CSRF |
 | Servidor | Gunicorn 27.0.1 | Servidor WSGI en producción |
-| Pruebas | pytest 9.1.1 | 90 pruebas automatizadas |
+| Pruebas | pytest 9.1.1 | 101 pruebas automatizadas |
 | Frontend | HTML5, CSS3, JavaScript | Interfaz y gráficos SVG propios, sin librerías externas |
 | Control de versiones | Git + GitHub | Repositorio público |
 | Despliegue | Render (Blueprint `render.yaml`) | Hosting del servicio web |
@@ -97,6 +97,29 @@ Reglas adicionales:
 - Un administrador no puede eliminarse a sí mismo, quitarse el rol ni eliminar al último administrador.
 - Las cuentas pueden desactivarse (`is_active_account`); una cuenta inactiva no puede iniciar sesión.
 - Las contraseñas se guardan con hash scrypt con sal (Werkzeug) y deben tener al menos 10 caracteres con letras y números.
+
+## Acceso para evaluadores (cuentas públicas de demostración)
+
+Para que docentes, evaluadores y jurados de NASA Space Apps puedan probar cada rol sin pedir credenciales, la pantalla de inicio de sesión incluye la sección **"NASA Evaluator Access · Credenciales de demostración"**, con instrucciones, botones para copiar correo y contraseña y un botón "Usar esta cuenta" que rellena el formulario.
+
+| Rol | Correo | Contraseña |
+|---|---|---|
+| ADMINISTRADOR | `admin.demo@astravital.example` | `AstraDemo-Admin-2026` |
+| MÉDICO / ESPECIALISTA | `medico.demo@astravital.example` | `AstraDemo-Medico-2026` |
+| OPERADOR | `operador.demo@astravital.example` | `AstraDemo-Operador-2026` |
+
+Diseño y seguridad:
+
+- Son cuentas **específicas de demostración** (columna `users.is_demo`), distintas de las cuentas privadas de administración cuyas contraseñas genera Render y que nunca se muestran.
+- Se crean con un *seed* **idempotente** (`ensure_demo_accounts()` en `app/demo.py`, ejecutado por `flask bootstrap` y `flask seed-demo-accounts`): no se duplican y, si alguien las altera, se restauran rol, estado y contraseña.
+- Cada cuenta tiene exactamente los permisos de su rol, y además se limitan las operaciones peligrosas en el backend: gestión de usuarios de solo lectura, sin cambio de contraseña, sin eliminar los datos sintéticos de referencia (sí los registros que el evaluador crea) y con correos privados e IP de auditoría enmascarados.
+- Una advertencia visible indica que son cuentas públicas y que no deben usarse datos personales ni reales.
+- La sección puede desactivarse con `DEMO_ACCOUNTS=0`.
+
+{{fig:22_login_evaluator_access.png|Pantalla de inicio de sesión con NASA Evaluator Access}}
+{{fig:22_admin_users_read_only.png|Administrador demo: gestión de usuarios en solo lectura}}
+{{fig:22_operator_reports_403.png|Operador demo: acceso denegado a Reportes (403)}}
+{{fig:22_login_mobile.png|Pantalla de inicio de sesión en móvil|tall}}
 
 # Operaciones CRUD
 
@@ -144,7 +167,7 @@ Los hallazgos de un mismo indicador se consolidan en una sola alerta, con la reg
 
 Todas las capturas se tomaron de la aplicación real en ejecución (navegador Chrome automatizado con Playwright sobre el servidor Flask local con datos sintéticos, y del navegador sobre el despliegue en Render). Los datos de astronautas y mediciones son sintéticos.
 
-{{fig:01_login.png|Pantalla de inicio de sesión}}
+{{fig:01_login.png|Pantalla de inicio de sesión (con NASA Evaluator Access)}}
 {{fig:02_dashboard_admin.png|Dashboard del Administrador}}
 {{fig:03_astronauts_list.png|Listado de astronautas}}
 {{fig:04a_astronaut_create_form.png|Crear astronauta: formulario}}
@@ -160,6 +183,9 @@ Todas las capturas se tomaron de la aplicación real en ejecución (navegador Ch
 {{fig:10a_alerts.png|Listado de alertas}}
 {{fig:10b_alert_detail_review.png|Detalle y revisión de una alerta}}
 {{fig:11_users_and_permissions.png|Gestión de usuarios y roles}}
+{{fig:22_dashboard_admin.png|Ingreso con la cuenta demo ADMINISTRADOR}}
+{{fig:22_dashboard_doctor.png|Ingreso con la cuenta demo MÉDICO / ESPECIALISTA}}
+{{fig:22_dashboard_operator.png|Ingreso con la cuenta demo OPERADOR}}
 {{fig:12_doctor_dashboard.png|Dashboard con rol Doctor/Especialista}}
 {{fig:12_doctor_users_forbidden_403.png|Doctor intenta acceder a Usuarios: 403}}
 {{fig:12_operator_dashboard.png|Dashboard con rol Operador}}
@@ -175,7 +201,7 @@ Todas las capturas se tomaron de la aplicación real en ejecución (navegador Ch
 
 {{include:TEST_REPORT.md}}
 
-{{fig:13_pytest_results.png|Resultado real de la ejecución de pytest: 90 pruebas aprobadas|tall}}
+{{fig:13_pytest_results.png|Resultado real de la ejecución de pytest: 101 pruebas aprobadas|tall}}
 
 # Despliegue en Render
 
@@ -208,7 +234,8 @@ El repositorio académico no contiene contraseñas, claves secretas ni archivos 
 - **Servicio:** `astra-vital-academic`, Render, plan gratuito, región Oregon.
 - La primera carga puede tardar hasta ~50 segundos si la instancia gratuita estaba suspendida por inactividad.
 - La base de datos se reinicia en cada reinicio o despliegue y siempre contiene los datos sintéticos de demostración (ver capítulo de despliegue).
-- Las cuentas iniciales (`admin@nyxara.example`, `doctor@nyxara.example`, `operator@nyxara.example`) usan contraseñas generadas por Render, que solo conoce el propietario de la cuenta; para revisar la aplicación se puede crear una cuenta de Operador desde "Create one".
+- **Acceso para evaluadores:** usar las cuentas públicas de demostración que muestra la pantalla de login (ver capítulo "Gestión de usuarios y roles"): `admin.demo@astravital.example` / `AstraDemo-Admin-2026`, `medico.demo@astravital.example` / `AstraDemo-Medico-2026`, `operador.demo@astravital.example` / `AstraDemo-Operador-2026`.
+- Las cuentas privadas de administración (`admin@nyxara.example`, etc.) usan contraseñas generadas por Render que solo conoce el propietario y no se publican.
 
 # Certificado NASA Space Apps Challenge 2026
 
@@ -219,7 +246,7 @@ El repositorio académico no contiene contraseñas, claves secretas ni archivos 
 1. Se construyó una aplicación web funcional con **Python Flask y SQLite** que cumple los requisitos del curso: seis tablas relacionadas con claves foráneas, restricciones e índices; CRUD completo; autenticación; y tres roles con permisos verificados en el backend.
 2. El motor de reglas de ASTRA VITAL se portó de JavaScript a Python y sus alertas ahora se **persisten** con explicación, acción sugerida, criterio de contacto y fuente, y pueden ser revisadas por personal médico.
 3. La seguridad se abordó en varias capas: hash scrypt, CSRF en todas las acciones, validación en formularios y en la base de datos, cookies seguras, cabeceras de seguridad, redirecciones seguras y auditoría.
-4. Las **90 pruebas automatizadas** pasan sin fallos y cubren autenticación, autorización, CRUD, motor de alertas y seguridad.
+4. Las **101 pruebas automatizadas** pasan sin fallos y cubren autenticación, autorización, CRUD, motor de alertas y seguridad.
 5. El sistema está desplegado públicamente en Render. Se verificó que en el **plan gratuito SQLite no persiste**: tras un nuevo despliegue y tras un reinicio la base se crea desde cero. Para uso real se requeriría un disco persistente (plan de pago) o una base de datos gestionada.
 6. El trabajo muestra cómo una idea creada en un hackatón internacional puede evolucionar hacia una aplicación más robusta, manteniendo una base científica (NASA HRP, NASA OSDR, guías clínicas) y aclarando sus límites: es un prototipo educativo y no un dispositivo médico.
 

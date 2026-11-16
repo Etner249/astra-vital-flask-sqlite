@@ -9,6 +9,10 @@ from .forms import AstronautForm, MissionForm, MeasurementForm, AlertReviewForm,
 from .models import Astronaut, Mission, HealthMeasurement, HealthAlert, User, utcnow
 from .services import log_action, generate_alerts
 from .engine import overall_status
+from .demo import demo_forbidden, is_demo_user
+
+BASELINE_MSG = ("Las cuentas públicas de demostración no pueden eliminar los datos sintéticos de referencia. "
+                "Crea un registro nuevo y elimínalo para probar la operación.")
 
 bp = Blueprint("crud", __name__)
 
@@ -97,6 +101,8 @@ def astronaut_edit(astronaut_id):
 @permission_required("astronauts.manage")
 def astronaut_delete(astronaut_id):
     a = db.get_or_404(Astronaut, astronaut_id)
+    if a.is_synthetic:
+        demo_forbidden(BASELINE_MSG)
     form = DeleteForm()
     open_priority = sum(1 for al in a.alerts if al.level == "priority" and al.status == "open")
     if request.method == "POST":
@@ -149,6 +155,8 @@ def mission_form(mission_id=None):
 @permission_required("missions.manage")
 def mission_delete(mission_id):
     m = db.get_or_404(Mission, mission_id)
+    if m.is_synthetic:
+        demo_forbidden(BASELINE_MSG)
     if not DeleteForm().validate_on_submit():
         abort(400)
     if m.astronauts:
@@ -219,6 +227,8 @@ def measurement_form(measurement_id=None):
 @permission_required("measurements.delete")
 def measurement_delete(measurement_id):
     m = db.get_or_404(HealthMeasurement, measurement_id)
+    if m.is_synthetic:
+        demo_forbidden(BASELINE_MSG)
     if not DeleteForm().validate_on_submit():
         abort(400)
     HealthAlert.query.filter_by(measurement_id=m.id, status="open").delete()
@@ -284,13 +294,15 @@ def alert_regenerate(measurement_id):
 @bp.route("/users")
 @permission_required("users.manage")
 def users():
-    return render_template("users/list.html", items=User.query.order_by(User.role, User.full_name).all(), delete_form=DeleteForm())
+    return render_template("users/list.html", items=User.query.order_by(User.role, User.full_name).all(), delete_form=DeleteForm(),
+                           demo=is_demo_user())
 
 
 @bp.route("/users/new", methods=["GET", "POST"])
 @bp.route("/users/<int:user_id>/edit", methods=["GET", "POST"])
 @permission_required("users.manage")
 def user_form(user_id=None):
+    demo_forbidden("La gestión de usuarios es de solo lectura para las cuentas públicas de demostración.")
     u = db.get_or_404(User, user_id) if user_id else None
     form = UserForm(obj=u)
     if form.validate_on_submit():
@@ -320,6 +332,7 @@ def user_form(user_id=None):
 @bp.route("/users/<int:user_id>/delete", methods=["POST"])
 @permission_required("users.manage")
 def user_delete(user_id):
+    demo_forbidden("La gestión de usuarios es de solo lectura para las cuentas públicas de demostración.")
     u = db.get_or_404(User, user_id)
     if not DeleteForm().validate_on_submit():
         abort(400)

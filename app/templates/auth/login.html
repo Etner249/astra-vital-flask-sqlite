@@ -1,8 +1,57 @@
-{% extends "auth/_layout.html" %}{% from "_macros.html" import field %}
-{% block title %}Sign in{% endblock %}
-{% block content %}<h2>Sign in</h2>
-<form method="post" novalidate>{{ form.hidden_tag() }}
-{{ field(form.email, autocomplete="username") }}{{ field(form.password, autocomplete="current-password") }}
-<label class="row" style="gap:8px">{{ form.remember(style="width:auto") }} Keep me signed in</label>
-<div style="margin-top:12px">{{ form.submit(class="btn primary") }}</div></form>
-<p class="muted" style="margin-bottom:0">No account? <a href="{{ url_for('auth.register') }}">Create one</a> (Operator role).</p>{% endblock %}
+{% from "_macros.html" import field %}<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iniciar sesión · ASTRA VITAL</title>
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/astra-vital-favicon.svg') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/astra.css') }}"></head>
+<body class="login-page"><div class="login-wrap">
+
+<header class="login-head">
+  <div class="brand"><img src="{{ url_for('static', filename='img/astra-vital-symbol.svg') }}" width="54" height="54" alt="">
+    <div><b style="font-size:20px">ASTRA VITAL</b><small>INTELLIGENT ASTRONAUT HEALTH MONITORING</small><div class="edition">ACADEMIC EDITION · FLASK + SQLITE</div></div></div>
+  <div class="team-tag">Equipo <b>NYXARA NOVA</b> · NASA Space Apps Challenge 2026</div>
+</header>
+
+<div class="login-grid{% if not demo_accounts %} single{% endif %}">
+  <section class="card login-card" aria-labelledby="signin-h">
+    <h2 id="signin-h">Iniciar sesión · Sign in</h2>
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for cat, msg in msgs %}<div class="flash {{ cat }}" role="status">{{ msg }}</div>{% endfor %}{% endwith %}
+    <form method="post" novalidate id="login-form">{{ form.hidden_tag() }}
+      {{ field(form.email, autocomplete="username", placeholder="usuario@ejemplo.com") }}
+      {{ field(form.password, autocomplete="current-password") }}
+      <label class="row remember">{{ form.remember(style="width:auto") }} Mantener la sesión iniciada</label>
+      {{ form.submit(class="btn primary block", value="Ingresar") }}
+    </form>
+    <p class="muted small">¿Sin cuenta? <a href="{{ url_for('auth.register') }}">Crear una</a> (rol Operador).</p>
+    {% if demo_accounts %}
+    <ol class="steps" aria-label="Cómo ingresar">
+      <li>Elige una cuenta de la sección <b>NASA Evaluator Access</b>.</li>
+      <li>Pulsa <b>Usar esta cuenta</b> (o copia el correo y la contraseña con los botones).</li>
+      <li>Pulsa <b>Ingresar</b>. Cada cuenta abre el sistema con los permisos de su rol.</li>
+    </ol>{% endif %}
+  </section>
+
+  {% if demo_accounts %}
+  <section class="card evaluator" aria-labelledby="eval-h">
+    <div class="eval-kicker">NASA EVALUATOR ACCESS</div>
+    <h2 id="eval-h">Credenciales de demostración</h2>
+    <p class="muted small">Tres cuentas públicas, una por rol, para que docentes, evaluadores y jurados de NASA Space Apps prueben el sistema completo.</p>
+    <div class="demo-list">
+    {% for a in demo_accounts %}
+      <article class="demo-acc role-{{ a.role }}" data-email="{{ a.email }}" data-password="{{ a.password }}">
+        <div class="demo-top"><span class="role-badge">{{ a.label }}</span><button type="button" class="btn small use-acc" aria-label="Usar la cuenta {{ a.label }}">Usar esta cuenta</button></div>
+        <dl>
+          <dt>Correo</dt><dd><code>{{ a.email }}</code><button type="button" class="copy" data-copy="{{ a.email }}" aria-label="Copiar correo de {{ a.label }}">Copiar</button></dd>
+          <dt>Contraseña</dt><dd><code>{{ a.password }}</code><button type="button" class="copy" data-copy="{{ a.password }}" aria-label="Copiar contraseña de {{ a.label }}">Copiar</button></dd>
+        </dl>
+        <p class="perm">{{ a.can }}</p>
+      </article>
+    {% endfor %}
+    </div>
+    <div class="demo-warning" role="note"><b>Cuentas públicas de demostración.</b> Cualquier persona puede usarlas: no ingreses datos personales, médicos ni reales. Todos los astronautas y signos vitales son sintéticos y la base de datos se restablece en cada reinicio del servicio. Por seguridad, estas cuentas no pueden gestionar usuarios, cambiar su contraseña ni borrar los datos de referencia.</div>
+  </section>
+  {% endif %}
+</div>
+
+<p class="disclaimer" style="text-align:center">Adaptación universitaria del proyecto ASTRA VITAL (equipo NYXARA NOVA, NASA Space Apps Challenge 2026). No es un producto oficial de la NASA. Prototipo educativo — no es un dispositivo médico.</p>
+</div>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body></html>

@@ -8,8 +8,8 @@ PASSWORD_RULES = [DataRequired(), Length(min=10, max=128, message="Use at least 
 
 
 class LoginForm(FlaskForm):
-    email = StringField("Email", validators=[DataRequired(), Email(), Length(max=160)])
-    password = PasswordField("Password", validators=[DataRequired(), Length(max=128)])
+    email = StringField("Correo electrónico · Email", validators=[DataRequired(), Email(), Length(max=160)])
+    password = PasswordField("Contraseña · Password", validators=[DataRequired(), Length(max=128)])
     remember = BooleanField("Keep me signed in")
     submit = SubmitField("Sign in")
 

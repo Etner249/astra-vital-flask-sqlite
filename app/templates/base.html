@@ -40,7 +40,7 @@
   <main>
     <div class="topbar">
       <div class="row"><button class="btn menu-btn" id="menu" aria-label="Open menu" type="button"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><h1>{% block heading %}{% endblock %}</h1></div>
-      <div class="meta">{% block meta %}{% endblock %}<span class="pill">Signed in as <b>&nbsp;{{ current_user.role_label }}</b></span></div>
+      <div class="meta">{% block meta %}{% endblock %}<span class="pill">Signed in as <b>&nbsp;{{ current_user.role_label }}</b></span>{% if current_user.is_demo %}<span class="pill demo" title="Cuenta pública de demostración: no ingreses datos personales ni reales">PUBLIC DEMO ACCOUNT</span>{% endif %}</div>
     </div>
     <div class="content fade">
       {% with msgs = get_flashed_messages(with_categories=true) %}{% for cat, msg in msgs %}<div class="flash {{ cat }}" role="status">{{ msg }}</div>{% endfor %}{% endwith %}

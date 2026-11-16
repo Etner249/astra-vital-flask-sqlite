@@ -5,6 +5,8 @@ from .extensions import db
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
 from .models import User, utcnow
 from .services import log_action
+from .demo import DEMO_ACCOUNTS, demo_forbidden, is_demo_user
+from flask import current_app
 
 bp = Blueprint("auth", __name__)
 
@@ -32,7 +34,8 @@ def login():
         log_action("login_failed", "user", details=form.email.data[:160])
         db.session.commit()
         flash("Invalid email or password.", "danger")  # same message for unknown user / wrong password
-    return render_template("auth/login.html", form=form)
+    demo = DEMO_ACCOUNTS if current_app.config.get("DEMO_ACCOUNTS_ENABLED") else ()
+    return render_template("auth/login.html", form=form, demo_accounts=demo)
 
 
 @bp.route("/register", methods=["GET", "POST"])
@@ -70,6 +73,8 @@ def logout():
 @login_required
 def settings():
     form = ChangePasswordForm()
+    if request.method == "POST":
+        demo_forbidden("Las cuentas públicas de demostración no pueden cambiar su contraseña (la comparten todos los evaluadores).")
     if form.validate_on_submit():
         if not current_user.check_password(form.current.data):
             form.current.errors.append("Current password is incorrect.")
@@ -79,4 +84,4 @@ def settings():
             db.session.commit()
             flash("Password updated.", "success")
             return redirect(url_for("auth.settings"))
-    return render_template("auth/settings.html", form=form)
+    return render_template("auth/settings.html", form=form, demo=is_demo_user())

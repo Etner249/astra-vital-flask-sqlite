@@ -33,6 +33,6 @@ Desarrollar una aplicación web con Python Flask y SQLite que permita registrar 
 | Roles y control de acceso en backend | `app/decorators.py`; `tests/test_authorization.py` |
 | Hash de contraseñas, CSRF, validación | `app/models.py`, Flask-WTF, `app/forms.py`; `tests/test_security.py` |
 | Usuario admin inicial seguro | comandos `flask create-user` / `flask bootstrap` (variables de entorno) |
-| Pruebas pytest | 90 pruebas, TEST_REPORT.md |
+| Pruebas pytest | 101 pruebas, TEST_REPORT.md |
 | Despliegue GitHub + Render | `render.yaml`, `gunicorn.conf.py`, DEPLOYMENT_GUIDE.md |
 | Documentación y evidencias | `docs/academic/`, `docs/academic/evidence/` |

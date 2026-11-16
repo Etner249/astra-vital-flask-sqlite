@@ -19,6 +19,10 @@ services:
         value: /opt/render/project/src/instance/astra_vital.db
       - key: SEED_DEMO
         value: "1"
+      # Public demo accounts (NASA Evaluator Access): fixed PUBLIC passwords defined in app/demo.py, shown on /login.
+      # They are separate from the private ADMIN/DOCTOR/OPERATOR accounts below, whose passwords Render generates.
+      - key: DEMO_ACCOUNTS
+        value: "1"
       - key: ADMIN_EMAIL
         value: admin@nyxara.example
       - key: ADMIN_PASSWORD

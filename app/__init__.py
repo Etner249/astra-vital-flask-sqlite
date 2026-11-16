@@ -48,6 +48,9 @@ def create_app(config_object=None, **overrides):
     from .decorators import can, PERMISSIONS
     from .models import ROLE_LABELS
     app.jinja_env.globals.update(can=can, ROLE_LABELS=ROLE_LABELS, PERMS=PERMISSIONS)
+    from .demo import mask_email as _mask, is_demo_user as _isdemo
+    app.jinja_env.filters["mask_email"] = _mask
+    app.jinja_env.globals["is_demo_user"] = _isdemo
 
     @app.after_request
     def security_headers(resp):
@@ -62,7 +65,9 @@ def create_app(config_object=None, **overrides):
         def handler(e, code=code, title=title):
             if code == 500:
                 db.session.rollback()
-            return render_template("errors/error.html", code=code, title=title), code
+            desc = getattr(e, "description", None)
+            custom = desc if code == 403 and desc and not desc.startswith("You don't have the permission") else None
+            return render_template("errors/error.html", code=code, title=title, message=custom), code
         app.register_error_handler(code, handler)
 
     from flask_wtf.csrf import CSRFError
@@ -77,6 +82,7 @@ def create_app(config_object=None, **overrides):
 
 def register_cli(app):
     from .models import User, Astronaut
+    from .demo import ensure_demo_accounts
     from .seed import seed_demo
 
     @app.cli.command("init-db")
@@ -127,3 +133,13 @@ def register_cli(app):
         db.session.commit()
         if os.environ.get("SEED_DEMO", "1") == "1":
             click.echo(f"Seeded {seed_demo()} synthetic measurements")
+        if app.config["DEMO_ACCOUNTS_ENABLED"]:
+            created, repaired = ensure_demo_accounts()
+            click.echo(f"Demo accounts ready: {created} created, {repaired} repaired, {User.query.filter_by(is_demo=True).count()} total")
+
+    @app.cli.command("seed-demo-accounts")
+    def seed_demo_accounts():
+        """Create (or repair) the three public demo accounts. Idempotent: never creates duplicates."""
+        db.create_all()
+        created, repaired = ensure_demo_accounts()
+        click.echo(f"Demo accounts ready: {created} created, {repaired} repaired")

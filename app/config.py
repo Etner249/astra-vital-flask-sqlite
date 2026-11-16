@@ -20,6 +20,8 @@ class Config:
     SESSION_COOKIE_SAMESITE = "Lax"
     REMEMBER_COOKIE_HTTPONLY = True
     PERMANENT_SESSION_LIFETIME = 60 * 60 * 8
+    # Public demo accounts (NASA Evaluator Access) shown on the login page and seeded by `flask bootstrap`.
+    DEMO_ACCOUNTS_ENABLED = os.environ.get("DEMO_ACCOUNTS", "1") == "1"
 
 
 class ProductionConfig(Config):

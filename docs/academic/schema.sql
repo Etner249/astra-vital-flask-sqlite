@@ -113,6 +113,7 @@ CREATE TABLE users (
 	role VARCHAR(20) NOT NULL, 
 	is_active_account BOOLEAN NOT NULL, 
 	last_login_at DATETIME, 
+	is_demo BOOLEAN DEFAULT 0 NOT NULL, 
 	created_at DATETIME NOT NULL, 
 	updated_at DATETIME NOT NULL, 
 	CONSTRAINT pk_users PRIMARY KEY (id), 

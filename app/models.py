@@ -28,6 +28,7 @@ class User(UserMixin, TimestampMixin, db.Model):
     role = db.Column(db.String(20), nullable=False, default="operator")
     is_active_account = db.Column(db.Boolean, nullable=False, default=True)
     last_login_at = db.Column(db.DateTime)
+    is_demo = db.Column(db.Boolean, nullable=False, default=False, server_default=db.text("0"))  # public demo account
     __table_args__ = (CheckConstraint("role IN ('admin','doctor','operator')", name="role_valid"),)
 
     def set_password(self, password):
