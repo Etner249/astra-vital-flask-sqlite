@@ -76,7 +76,7 @@ def create_app(config_object=None, **overrides):
 
 
 def register_cli(app):
-    from .models import User
+    from .models import User, Astronaut
     from .seed import seed_demo
 
     @app.cli.command("init-db")
@@ -110,7 +110,13 @@ def register_cli(app):
     @app.cli.command("bootstrap")
     def bootstrap():
         """Deployment start-up: create tables, create users from environment variables if missing, seed demo data."""
+        db_path = app.config["SQLALCHEMY_DATABASE_URI"].replace("sqlite:///", "", 1)
+        if os.path.exists(db_path):
+            click.echo(f"Existing SQLite database found at {db_path} ({os.path.getsize(db_path)} bytes)")
+        else:
+            click.echo(f"No SQLite database at {db_path}: creating a new one")
         db.create_all()
+        click.echo(f"Database contents: {User.query.count()} users, {Astronaut.query.count()} astronauts")
         for role in ("ADMIN", "DOCTOR", "OPERATOR"):
             email, pwd = os.environ.get(f"{role}_EMAIL"), os.environ.get(f"{role}_PASSWORD")
             if email and pwd and not User.query.filter_by(email=email.lower()).first():
