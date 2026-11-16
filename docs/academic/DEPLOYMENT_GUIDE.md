@@ -35,8 +35,8 @@ El plan gratuito de Render usa un sistema de archivos **efímero** y no admite d
 | Evento | Comportamiento observado | Evidencia |
 |---|---|---|
 | Primer deploy (10:58) | Base creada desde cero: "Created admin/doctor/operator", "Seeded 83 synthetic measurements" | Logs de Render, `evidence/14b_render_logs_first_deploy.jpg` |
-| Nuevo deploy (commit posterior) | Ver sección "Verificación" abajo | `evidence/14c_*` |
-| Reinicio del servicio | Ver sección "Verificación" abajo | `evidence/14d_*` |
+| Nuevo deploy manual (commit `ae950ad`, 11:03–11:04) | Log: "No SQLite database at /opt/render/project/src/instance/astra_vital.db: creating a new one" · "Database contents: 0 users, 0 astronauts" → se recrean usuarios y datos | `evidence/14c_render_redeploy_db_recreated.jpg` |
+| Reinicio del servicio ("Restart service", 11:05–11:06, instancia `76v2v`) | Mismo resultado: no existe la base anterior, se crea una nueva con 0 usuarios y se vuelve a sembrar | `evidence/14d_render_restart_db_recreated.jpg` |
 
 **Consecuencia:** cualquier dato creado por los usuarios en la instancia gratuita se pierde al reiniciar, al redesplegar o cuando Render suspende la instancia por inactividad (~15 min); la app vuelve a su estado de demostración. Esto es aceptable para una demo académica, no para uso real.
 
@@ -50,5 +50,7 @@ disk:
 ```
 Con disco montado, `bootstrap` detecta la base existente ("Existing SQLite database found…") y no duplica usuarios ni datos (comprobado localmente: segunda ejecución → "1 users, 4 astronauts", "Seeded 0").
 
-## Verificación
-<!-- VERIFY -->
+## Verificación (16/11/2026)
+1. `GET /login` en https://astra-vital-academic.onrender.com responde 200 (health check de Render cada 5 s y navegador) — `evidence/14a_render_deployed_login.jpg`.
+2. Primer deploy, redeploy y reinicio muestran en los logs que la base SQLite se crea desde cero cada vez (tabla anterior). **Conclusión: en el plan gratuito los datos no persisten; la aplicación siempre arranca en estado de demostración.**
+3. Inicio de sesión en producción: realizado por el propietario de la cuenta con la contraseña generada por Render (nunca escrita en el repositorio) — `evidence/15_render_after_login.png`.
