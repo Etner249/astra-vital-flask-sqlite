@@ -1,8 +1,8 @@
 {
   "university": "Universidad Privada de Trujillo (UPRIT)",
   "faculty": "Facultad de Ingeniería de Sistemas e Inteligencia Artificial",
-  "course": null,
-  "professor": null,
+  "course": "Programación y Desarrollo Web",
+  "professor": "Mg. Charlen Máximo Calero Huamán",
   "cycle_section": null,
   "city_date": "Trujillo, noviembre de 2026",
   "team": "NYXARA NOVA",
@@ -12,5 +12,10 @@
     "Darlin Saldaña Pinedo",
     "Máximo Fabrizzio Espinoza Peche"
   ],
-  "certificate": null
+  "certificate": null,
+  "cover_members": [
+    "Etner Therry Rios Vasquez",
+    "Jeanfranco Alfredo Ibarra Kocfú"
+  ],
+  "certificate_note": "El certificado oficial será entregado entre el 1 y el 6 de diciembre de 2026."
 }

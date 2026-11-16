@@ -66,22 +66,42 @@ function table(headers, rows, widths, opt = {}) {
 const pend = (v, label) => v ? [new TextRun({ text: v, size: 24 })] : [new TextRun({ text: `[PENDIENTE — ${label}]`, size: 24, color: 'B42318', bold: true, highlight: 'yellow' })];
 
 // ======================================================= COVER
-const coverRow = (k, v) => new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 80 }, children: [new TextRun({ text: k + ': ', bold: true, size: 24, color: NAVY }), ...v] });
+const RED = 'A71A3A', INK = '1B1B2F';
+const NB = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+const noB = { top: NB, bottom: NB, left: NB, right: NB, insideHorizontal: NB, insideVertical: NB };
+const PAGE_W = 11906, IND = 1700;
+const cp = (children, o = {}) => new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 0 }, children, ...o });
+const T = (text, o = {}) => new TextRun({ text, font: FONT, ...o });
+const band = new Table({ width: { size: PAGE_W, type: WidthType.DXA }, columnWidths: [PAGE_W], borders: noB,
+  rows: [new TableRow({ height: { value: 3900, rule: 'exact' }, children: [new TableCell({ width: { size: PAGE_W, type: WidthType.DXA }, borders: noB,
+    shading: { type: ShadingType.CLEAR, fill: RED }, margins: { top: 0, bottom: 0, left: 0, right: 0 }, verticalAlign: 'center',
+    children: [
+      cp([new ImageRun({ type: 'png', data: fs.readFileSync(path.join(__dirname, 'uprit_logo.png')), transformation: { width: 300, height: 174 }, altText: { title: 'UPRIT', description: 'Logotipo Universidad Privada de Trujillo', name: 'uprit' } })], { spacing: { before: 120, after: 60 } }),
+      cp([T((COVER.faculty || '').toUpperCase(), { size: 19, color: 'FFFFFF', bold: true, characterSpacing: 30 })], { spacing: { after: 120 } }),
+    ] })] })] });
+const rule = (w = 1400, color = RED) => cp([], { border: { bottom: { style: BorderStyle.SINGLE, size: 12, color, space: 1 } }, indent: { left: (PAGE_W - w) / 2, right: (PAGE_W - w) / 2 }, spacing: { after: 0 } });
+const infoRow = (k, lines) => new TableRow({ cantSplit: true, children: [
+  new TableCell({ width: { size: 2300, type: WidthType.DXA }, borders: { ...noB, bottom: { style: BorderStyle.SINGLE, size: 4, color: 'E3D3D8' } }, margins: { top: 110, bottom: 110, left: 0, right: 120 },
+    children: [new Paragraph({ spacing: { after: 0 }, children: [T(k.toUpperCase(), { size: 17, bold: true, color: RED, characterSpacing: 20 })] })] }),
+  new TableCell({ width: { size: 5800, type: WidthType.DXA }, borders: { ...noB, bottom: { style: BorderStyle.SINGLE, size: 4, color: 'E3D3D8' } }, margins: { top: 110, bottom: 110, left: 120, right: 0 },
+    children: lines.map(l => new Paragraph({ spacing: { after: 20 }, children: [T(l, { size: 22, color: INK })] })) })] });
+const infoRows = [['Curso', [COVER.course]], ['Docente', [COVER.professor]]];
+if (COVER.cycle_section) infoRows.push(['Ciclo / sección', [COVER.cycle_section]]);
+infoRows.push(['Integrantes', COVER.cover_members || COVER.members], ['Equipo', ['NYXARA NOVA — NASA Space Apps Challenge 2026']]);
+const info = new Table({ width: { size: 8100, type: WidthType.DXA }, columnWidths: [2300, 5800], alignment: AlignmentType.CENTER, borders: noB,
+  rows: infoRows.map(([k, v]) => infoRow(k, v.map(x => x || '[PENDIENTE]'))) });
 const cover = [
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 400, after: 60 }, children: [new TextRun({ text: 'UNIVERSIDAD PRIVADA DE TRUJILLO', bold: true, size: 34, color: NAVY })] }),
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 400 }, children: COVER.faculty ? [new TextRun({ text: COVER.faculty.toUpperCase(), size: 24, color: GREY })] : pend(null, 'Facultad') }),
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 300 }, children: [new ImageRun({ type: 'png', data: fs.readFileSync(path.join(__dirname, 'logo_cover.png')), transformation: { width: 380, height: 73 }, altText: { title: 'ASTRA VITAL', description: 'Logotipo ASTRA VITAL', name: 'logo' } })] }),
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 120 }, children: [new TextRun({ text: 'TRABAJO FINAL DEL CURSO', bold: true, size: 28, color: BLUE })] }),
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 360 }, children: [new TextRun({ text: 'Desarrollo de una aplicación web con Python Flask y SQLite', size: 26, italics: true })] }),
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 80 }, children: [new TextRun({ text: 'ASTRA VITAL', bold: true, size: 52, color: NAVY })] }),
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 500 }, children: [new TextRun({ text: 'Sistema web de monitoreo de salud de astronautas — NASA Space Apps Challenge 2026', size: 24, color: GREY })] }),
-  coverRow('Curso', pend(COVER.course, 'nombre exacto del curso')),
-  coverRow('Docente', pend(COVER.professor, 'docente')),
-  coverRow('Ciclo / sección', pend(COVER.cycle_section, 'ciclo y sección')),
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 300, after: 80 }, children: [new TextRun({ text: 'Integrantes — equipo NYXARA NOVA', bold: true, size: 24, color: NAVY })] }),
-  ...COVER.members.map(m => new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 40 }, children: [new TextRun({ text: m, size: 24 })] })),
-  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 600 }, children: [new TextRun({ text: COVER.city_date, size: 22, color: GREY })] }),
+  band,
+  cp([T('TRABAJO FINAL DEL CURSO', { size: 22, bold: true, color: RED, characterSpacing: 60 })], { spacing: { before: 1100, after: 120 } }),
+  rule(900),
+  cp([new ImageRun({ type: 'png', data: fs.readFileSync(path.join(__dirname, 'logo_cover.png')), transformation: { width: 520, height: 100 }, altText: { title: 'ASTRA VITAL', description: 'Logotipo ASTRA VITAL', name: 'logo' } })], { spacing: { before: 700, after: 360 } }),
+  cp([T('Desarrollo de una aplicación web con Python Flask y SQLite', { size: 34, bold: true, color: NAVY })], { spacing: { after: 140 }, indent: { left: IND, right: IND } }),
+  cp([T('Sistema web de monitoreo de salud de astronautas', { size: 24, color: GREY, italics: true })], { spacing: { after: 1100 } }),
+  info,
 ];
+const coverFooter = new Footer({ children: [new Table({ width: { size: PAGE_W, type: WidthType.DXA }, columnWidths: [PAGE_W], borders: noB,
+  rows: [new TableRow({ height: { value: 760, rule: 'exact' }, children: [new TableCell({ width: { size: PAGE_W, type: WidthType.DXA }, borders: noB, shading: { type: ShadingType.CLEAR, fill: RED }, verticalAlign: 'center', margins: { top: 0, bottom: 0, left: 0, right: 0 },
+    children: [cp([T('TRUJILLO, PERÚ  ·  NOVIEMBRE 2026', { size: 18, bold: true, color: 'FFFFFF', characterSpacing: 60 })])] })] })] })] });
 
 // ======================================================= BODY
 const roleRows = [
@@ -378,7 +398,7 @@ add(H1('17. Participación en NASA Space Apps Challenge 2026'),
     ['Proyecto', 'ASTRA VITAL — [https://etner249.github.io/astra-vital/](https://etner249.github.io/astra-vital/)'],
     ['Videos', '[Demo 30 s](https://youtu.be/lxITVao2RmQ) · [Presentación completa](https://youtu.be/sz9qzXasEKc)'],
     ['Estado', 'Enviado a evaluación (*Submit for Judging*) el 15/11/2026 a las 16:35 (hora local)'],
-    ['Certificado', COVER.certificate ? 'Incluido en el Anexo F' : '[PENDIENTE — certificado oficial a proporcionar por el equipo]'],
+    ['Certificado', COVER.certificate ? 'Incluido en el Anexo F' : (COVER.certificate_note || 'Pendiente')],
   ], [2400, 6626], { caption: 'Datos de la participación.' }),
   ...fig('21a_space_apps_team_page.jpg', 'Página del equipo NYXARA NOVA en el portal de NASA Space Apps.', 480),
   NOTE('ASTRA VITAL es un proyecto independiente: no fue desarrollado, respaldado ni validado por la NASA.'));
@@ -409,7 +429,7 @@ add(H1('19. Resultados'),
     ['4. Registro, login, logout y roles', 'Cumplido: 3 roles en backend, tokens y sesiones', 'Sección 10'],
     ['5. Pruebas automatizadas', `Cumplido: ${TESTS.length} pytest + 10 motor JS + ${E2E.length} E2E`, 'Sección 15'],
     ['6. GitHub y Render', 'Cumplido (Render Free sin persistencia)', 'Sección 16'],
-    ['7. Certificado NASA', COVER.certificate ? 'Cumplido' : 'Participación verificada; certificado pendiente de adjuntar', 'Sección 17'],
+    ['7. Certificado NASA', COVER.certificate ? 'Cumplido' : 'Participación verificada; certificado se entrega del 1 al 6 de diciembre', 'Sección 17'],
   ], [3200, 3800, 2026], { caption: 'Cumplimiento de los siete requisitos.' }));
 
 add(H1('20. Limitaciones'),
@@ -460,7 +480,7 @@ add(H1('Anexos'),
   H2('Anexo D. Verificaciones E2E (Playwright)'), ...CODE(E2E.join('\n')),
   H2('Anexo E. Interfaz Flask (Jinja) en Render'), P('Además de la API, el backend ofrece su propia interfaz HTML en `https://astra-vital-academic.onrender.com/login`.'), ...fig('20e_render_flask_login.jpg', 'Interfaz Flask en Render.', 480),
   H2('Anexo F. Certificado NASA Space Apps Challenge 2026'),
-  ...(COVER.certificate ? fig(COVER.certificate, 'Certificado oficial de participación.') : [NOTE('**PENDIENTE:** el certificado oficial debe ser proporcionado por el equipo (descargable desde el perfil del participante en spaceappschallenge.org). No se reconstruye ni se genera.')]));
+  ...(COVER.certificate ? fig(COVER.certificate, 'Certificado oficial de participación.') : [NOTE('**Pendiente:** ' + (COVER.certificate_note || 'certificado por entregar.'))]));
 
 // ======================================================= DOCUMENT
 const doc = new Document({
@@ -479,7 +499,7 @@ const doc = new Document({
     { reference: 'num', levels: [{ level: 0, format: LevelFormat.DECIMAL, text: '%1.', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 300 } } } }] },
   ] },
   sections: [
-    { properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } } }, children: cover },
+    { properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 0, right: 0, bottom: 900, left: 0, footer: 0, header: 0 } } }, footers: { default: coverFooter }, children: cover },
     { properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1440, right: 1440, bottom: 1300, left: 1440 }, pageNumbers: { start: 1 } } },
       headers: { default: new Header({ children: [new Paragraph({ border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'C9D3E0', space: 2 } }, tabStops: [{ type: TabStopType.RIGHT, position: CW }], children: [new TextRun({ text: 'ASTRA VITAL — Trabajo final · Python Flask + SQLite', size: 16, color: GREY }), new TextRun({ text: '\tEquipo NYXARA NOVA', size: 16, color: GREY })] })] }) },
       footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'Página ', size: 16, color: GREY }), new TextRun({ children: [PageNumber.CURRENT], size: 16, color: GREY })] })] }) },

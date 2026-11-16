@@ -22,10 +22,10 @@ Documentos: [ASTRA_VITAL_TRABAJO_FINAL.docx](ASTRA_VITAL_TRABAJO_FINAL.docx) · 
 
 ## Datos faltantes (marcados en amarillo en la portada)
 
-1. Nombre exacto del curso
-2. Docente
-3. Ciclo y sección
+1. ~~Curso~~ ✔ Programación y Desarrollo Web
+2. ~~Docente~~ ✔ Mg. Charlen Máximo Calero Huamán
+3. Ciclo y sección: omitido en la portada
 4. Confirmar facultad (se usó "Facultad de Ingeniería de Sistemas e Inteligencia Artificial")
-5. Certificado NASA (archivo, o autorización para descargarlo desde el perfil de spaceappschallenge.org)
+5. Certificado NASA: se entrega del 1 al 6 de diciembre de 2026
 
 Al recibirlos: editar `docs/academic/cover.json` y ejecutar `node build/build_docx.js && python3 build/finalize.py`.
