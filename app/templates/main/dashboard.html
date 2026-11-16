@@ -1,0 +1,45 @@
+{% extends "base.html" %}{% from "_macros.html" import badge, synth %}
+{% block title %}Mission Dashboard{% endblock %}{% block heading %}Mission Dashboard{% endblock %}
+{% block meta %}{% if stats.synthetic %}<span class="pill demo">INCLUDES SYNTHETIC DEMO DATA</span>{% endif %}{{ badge(status) }}{% endblock %}
+{% block content %}
+<div class="grid g3">
+  <div class="card span2"><h2>Overall crew status</h2>
+    <div class="status-hero">
+      {% set col = {'priority':'var(--crit)','followup':'var(--warn)','nominal':'var(--ok)'}[status] %}
+      <div class="status-ring" style="border-color:{{ col }};color:{{ col }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">{% if status=='nominal' %}<path d="M5 12.5l4.5 4.5L19 7.5"/>{% else %}<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>{% endif %}</svg></div>
+      <div><h3 style="font-size:20px">{{ {'priority':'Priority','followup':'Follow-up','nominal':'Nominal'}[status] }}</h3>
+        <div class="muted">{{ {'priority':'At least one open alert needs attention now.','followup':'No emergency. Some indicators should be followed up.','nominal':'No open alerts.'}[status] }}</div>
+        <div class="row" style="margin-top:10px">{{ badge('priority', (counts.get('priority',0))|string + ' priority') }}{{ badge('followup', (counts.get('followup',0))|string + ' follow-up') }}{{ badge('info', (counts.get('info',0))|string + ' informative') }}</div></div>
+    </div></div>
+  <div class="card"><h2>Missions</h2>
+    {% for m in missions %}<div style="margin-bottom:10px"><b>{{ m.code }}</b> <span class="muted">{{ m.name }}</span>
+      {% set day = (now.date() - m.start_date).days + 1 %}<div class="muted" style="font-size:12px">Day {{ day }} of {{ m.duration_days }}</div>
+      <div class="progress"><i style="width:{{ [100, (day / m.duration_days * 100)|round]|min }}%"></i></div></div>
+    {% else %}<div class="empty">No active missions.</div>{% endfor %}
+    <a class="btn" href="{{ url_for('crud.missions') }}">All missions</a></div>
+</div>
+<div class="grid g4" style="margin-top:16px">
+  <div class="card kpi"><div class="l">Astronauts registered</div><div class="v">{{ stats.astronauts }}<small>{{ stats.active_astronauts }} active</small></div></div>
+  <div class="card kpi"><div class="l">Measurements recorded</div><div class="v">{{ stats.measurements }}<small>{{ stats.synthetic }} synthetic</small></div></div>
+  <div class="card kpi"><div class="l">Active alerts</div><div class="v">{{ stats.open_alerts }}<small>not resolved</small></div></div>
+  <div class="card kpi"><div class="l">Missions</div><div class="v">{{ stats.missions }}<small>{{ stats.active_missions }} active</small></div></div>
+</div>
+<div class="grid g2" style="margin-top:16px">
+  <div class="card"><h2>Heart rate — last 21 days (bpm)</h2><div data-label="heart rate" data-band="60,100" id="hrchart"></div></div>
+  <div class="card"><h2>SpO2 — last 21 days (%)</h2><div data-label="spo2" data-band="95,100" id="spchart"></div></div>
+</div>
+<script>
+(function(){ const d = {{ chart|safe }}; const mk = k => JSON.stringify(Object.entries(d).map(([c, s]) => ({label: c, points: s[k]})));
+ document.getElementById('hrchart').dataset.series = mk('heart_rate'); document.getElementById('spchart').dataset.series = mk('spo2'); })();
+</script>
+<div class="grid g3" style="margin-top:16px">
+  <div class="card span2"><h2>Active alerts <a class="btn" href="{{ url_for('crud.alerts') }}">All alerts</a></h2>
+    {% for a in top_alerts %}<div class="alert {{ a.level }}"><div class="head" style="cursor:default"><div><a href="{{ url_for('crud.alert_detail', alert_id=a.id) }}"><b>{{ a.title }}</b></a><div class="muted" style="font-size:12.5px">{{ a.astronaut.code }} · {{ a.what_changed }}</div></div><div class="row">{{ badge(a.status) }}{{ badge(a.level) }}</div></div></div>
+    {% else %}<div class="empty">No active alerts.</div>{% endfor %}</div>
+  <div class="card"><h2>Crew</h2><table><tbody>{% for a, st, n in per_astro %}<tr><td><a href="{{ url_for('crud.astronaut_detail', astronaut_id=a.id) }}">{{ a.code }}</a></td><td>{{ badge(st) }}</td><td class="num dim">{{ n }} open</td></tr>{% else %}<tr><td class="dim">No astronauts.</td></tr>{% endfor %}</tbody></table></div>
+</div>
+<div class="card" style="margin-top:16px"><h2>Latest measurements <a class="btn" href="{{ url_for('crud.measurements') }}">History</a></h2>
+<div class="tablewrap"><table><thead><tr><th>Time (UTC)</th><th>Astronaut</th><th>HR</th><th>BP</th><th>SpO2</th><th>Temp</th><th>RR</th><th>Data</th></tr></thead><tbody>
+{% for m in latest %}<tr><td class="num">{{ m.measured_at.strftime('%Y-%m-%d %H:%M') }}</td><td>{{ m.astronaut.code }}</td><td class="num">{{ m.heart_rate or '—' }}</td><td class="num">{% if m.systolic_bp %}{{ m.systolic_bp }}/{{ m.diastolic_bp }}{% else %}—{% endif %}</td><td class="num">{{ m.spo2 or '—' }}</td><td class="num">{{ m.temperature or '—' }}</td><td class="num">{{ m.respiratory_rate or '—' }}</td><td>{{ synth(m.is_synthetic) }}</td></tr>
+{% else %}<tr><td colspan="8" class="dim">No measurements yet.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

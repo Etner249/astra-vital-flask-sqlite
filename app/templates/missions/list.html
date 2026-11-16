@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% from "_macros.html" import synth, delete_button %}
+{% block title %}Missions{% endblock %}{% block heading %}Missions{% endblock %}
+{% block content %}<div class="card"><h2>Missions ({{ items|length }}) {% if can('missions.manage') %}<a class="btn primary" href="{{ url_for('crud.mission_form') }}">+ New mission</a>{% endif %}</h2>
+<div class="tablewrap"><table><thead><tr><th>Code</th><th>Name</th><th>Environment</th><th>Start</th><th>Days</th><th>Status</th><th>Crew</th><th>Data</th><th></th></tr></thead><tbody>
+{% for m in items %}<tr><td><b>{{ m.code }}</b></td><td>{{ m.name }}</td><td>{{ m.environment }}</td><td class="num">{{ m.start_date }}</td><td class="num">{{ m.duration_days }}</td><td><span class="tag">{{ m.status }}</span></td><td class="num">{{ m.astronauts|length }}</td><td>{{ synth(m.is_synthetic) }}</td>
+<td class="row" style="gap:6px">{% if can('missions.manage') %}<a class="btn" href="{{ url_for('crud.mission_form', mission_id=m.id) }}">Edit</a>{{ delete_button(url_for('crud.mission_delete', mission_id=m.id), delete_form) }}{% endif %}</td></tr>
+{% else %}<tr><td colspan="9" class="dim">No missions.</td></tr>{% endfor %}</tbody></table></div>
+<p class="hint">A mission with assigned astronauts cannot be deleted (foreign key with ON DELETE RESTRICT + application check).</p></div>{% endblock %}

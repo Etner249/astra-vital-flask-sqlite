@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% from "_macros.html" import badge, synth, delete_button %}
+{% block title %}{{ a.code }}{% endblock %}{% block heading %}Astronaut profile · {{ a.code }}{% endblock %}
+{% block meta %}{% if a.is_synthetic %}<span class="pill demo">SYNTHETIC PROFILE</span>{% endif %}{{ badge(status) }}{% endblock %}
+{% block content %}
+<div class="grid g3">
+<div class="card"><h2>Profile</h2><dl class="kv"><dt>Code</dt><dd><b>{{ a.code }}</b></dd><dt>Name</dt><dd>{{ a.full_name }}</dd><dt>Age (demo)</dt><dd>{{ a.demo_age or '—' }}</dd><dt>Role on board</dt><dd>{{ a.role_on_board or '—' }}</dd><dt>Mission</dt><dd>{{ a.mission.code ~ ' · ' ~ a.mission.name if a.mission else '—' }}</dd><dt>Status</dt><dd>{{ a.status }}</dd><dt>Registered</dt><dd>{{ a.created_at.strftime('%Y-%m-%d') }}</dd><dt>Notes</dt><dd>{{ a.notes or '—' }}</dd></dl>
+<div class="row" style="margin-top:12px">{% if can('measurements.create') %}<a class="btn primary" href="{{ url_for('crud.measurement_form', astronaut_id=a.id) }}">+ Measurement</a>{% endif %}{% if can('astronauts.manage') %}<a class="btn" href="{{ url_for('crud.astronaut_edit', astronaut_id=a.id) }}">Edit</a><a class="btn danger" href="{{ url_for('crud.astronaut_delete', astronaut_id=a.id) }}">Delete</a>{% endif %}</div></div>
+<div class="card span2"><h2>Alerts ({{ a.alerts|length }})</h2><div style="max-height:330px;overflow:auto">
+{% for al in a.alerts %}<div class="alert {{ al.level }}"><div class="head" style="cursor:default"><div><a href="{{ url_for('crud.alert_detail', alert_id=al.id) }}"><b>{{ al.title }}</b></a><div class="muted" style="font-size:12.5px">{{ al.what_changed }}</div></div><div class="row">{{ badge(al.status) }}{{ badge(al.level) }}</div></div></div>
+{% else %}<div class="empty">No alerts.</div>{% endfor %}</div></div></div>
+<div class="grid g2" style="margin-top:16px">
+<div class="card"><h2>Heart rate (bpm)</h2><div data-band="60,100" data-series='{{ [{"label":"Heart rate","points":series.heart_rate}]|tojson }}'></div></div>
+<div class="card"><h2>Blood pressure (mmHg)</h2><div data-series='{{ [{"label":"Systolic","points":series.systolic_bp},{"label":"Diastolic","points":series.diastolic_bp,"color":"#7aa7ff"}]|tojson }}'></div></div>
+<div class="card"><h2>SpO2 (%)</h2><div data-band="95,100" data-series='{{ [{"label":"SpO2","points":series.spo2}]|tojson }}'></div></div>
+<div class="card"><h2>Temperature (°C) and respiratory rate</h2><div data-band="36.1,37.2" data-series='{{ [{"label":"Temperature","points":series.temperature}]|tojson }}'></div><div data-band="12,20" data-h="150" data-series='{{ [{"label":"Respiratory rate","points":series.respiratory_rate,"color":"#b48cff"}]|tojson }}'></div></div></div>
+<div class="card" style="margin-top:16px"><h2>Measurement history ({{ measurements|length }})</h2><div class="tablewrap"><table><thead><tr><th>Time (UTC)</th><th>HR</th><th>BP</th><th>SpO2</th><th>Temp</th><th>RR</th><th>Data</th><th>Notes</th><th></th></tr></thead><tbody>
+{% for m in measurements %}<tr><td class="num">{{ m.measured_at.strftime('%Y-%m-%d %H:%M') }}</td><td class="num">{{ m.heart_rate or '—' }}</td><td class="num">{% if m.systolic_bp %}{{ m.systolic_bp }}/{{ m.diastolic_bp }}{% else %}—{% endif %}</td><td class="num">{{ m.spo2 or '—' }}</td><td class="num">{{ m.temperature or '—' }}</td><td class="num">{{ m.respiratory_rate or '—' }}</td><td>{{ synth(m.is_synthetic) }}</td><td class="muted">{{ (m.notes or '')[:40] }}</td>
+<td class="row" style="gap:6px">{% if can('measurements.edit') %}<a class="btn" href="{{ url_for('crud.measurement_form', measurement_id=m.id) }}">Edit</a>{% endif %}{% if can('measurements.delete') %}{{ delete_button(url_for('crud.measurement_delete', measurement_id=m.id), delete_form, next=url_for('crud.astronaut_detail', astronaut_id=a.id)) }}{% endif %}</td></tr>
+{% else %}<tr><td colspan="9" class="dim">No measurements.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

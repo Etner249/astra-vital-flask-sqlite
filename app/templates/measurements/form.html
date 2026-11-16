@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% from "_macros.html" import field %}
+{% block title %}{{ 'Edit' if m else 'Record' }} measurement{% endblock %}{% block heading %}{{ 'Edit measurement' if m else 'Record measurement' }}{% endblock %}
+{% block content %}<div class="grid g2"><div class="card"><h2>Vital signs</h2>
+<form method="post" novalidate>{{ form.hidden_tag() }}<div class="form-grid">
+{{ field(form.astronaut_id, cls='full') }}{{ field(form.measured_at, cls='full') }}
+{{ field(form.heart_rate, inputmode="numeric") }}{{ field(form.respiratory_rate, inputmode="numeric") }}
+{{ field(form.systolic_bp, inputmode="numeric") }}{{ field(form.diastolic_bp, inputmode="numeric") }}
+{{ field(form.spo2, inputmode="decimal") }}{{ field(form.temperature, inputmode="decimal") }}
+{{ field(form.notes, cls='full', rows=3) }}</div>
+<div class="hint">Values are entered manually; this prototype does not connect to sensors. Saving re-runs the rule engine and stores any alerts in SQLite.</div>
+<div class="row" style="margin-top:12px">{{ form.submit(class="btn primary") }}<a class="btn" href="{{ url_for('crud.measurements') }}">Cancel</a></div></form></div>
+<div class="card"><h2>Documented reference ranges (adults, at rest)</h2><table><tbody>
+<tr><td>Heart rate</td><td class="num">60–100 bpm</td><td class="dim">AHA</td></tr>
+<tr><td>Blood pressure</td><td class="num">&lt;120/&lt;80 mmHg</td><td class="dim">ACC/AHA 2017</td></tr>
+<tr><td>SpO2</td><td class="num">95–100 %</td><td class="dim">WHO 2011</td></tr>
+<tr><td>Temperature</td><td class="num">fever ≥ 38.0 °C</td><td class="dim">CDC</td></tr>
+<tr><td>Respiratory rate</td><td class="num">12–20 /min</td><td class="dim">clinical references</td></tr></tbody></table>
+<p class="hint">Educational prototype. Alerts are explanations, not diagnoses.</p></div></div>{% endblock %}

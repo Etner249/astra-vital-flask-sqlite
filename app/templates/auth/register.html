@@ -1,0 +1,8 @@
+{% extends "auth/_layout.html" %}{% from "_macros.html" import field %}
+{% block title %}Create account{% endblock %}
+{% block content %}<h2>Create account</h2>
+<form method="post" novalidate>{{ form.hidden_tag() }}
+{{ field(form.full_name) }}{{ field(form.email, autocomplete="username") }}{{ field(form.password, autocomplete="new-password") }}{{ field(form.confirm, autocomplete="new-password") }}
+<div class="hint">New accounts get the Operator role (least privilege). Passwords: at least 10 characters with letters and numbers; stored only as a salted hash.</div>
+<div style="margin-top:12px">{{ form.submit(class="btn primary") }}</div></form>
+<p class="muted" style="margin-bottom:0"><a href="{{ url_for('auth.login') }}">Back to sign in</a></p>{% endblock %}

@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% from "_macros.html" import field %}
+{% block title %}User{% endblock %}{% block heading %}{{ 'Edit user' if u else 'New user' }}{% endblock %}
+{% block content %}<div class="card" style="max-width:720px"><h2>User account</h2><form method="post" novalidate>{{ form.hidden_tag() }}<div class="form-grid">
+{{ field(form.full_name) }}{{ field(form.email) }}{{ field(form.role) }}{{ field(form.password, autocomplete="new-password") }}<div class="field full"><label class="row" style="gap:8px">{{ form.is_active_account(style="width:auto") }} Account active</label></div></div>
+<div class="row" style="margin-top:12px">{{ form.submit(class="btn primary") }}<a class="btn" href="{{ url_for('crud.users') }}">Cancel</a></div></form></div>{% endblock %}

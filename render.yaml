@@ -1,0 +1,37 @@
+# Render Blueprint — ASTRA VITAL Academic Edition (Flask + SQLite)
+# FREE plan: Render free web services do NOT support persistent disks, so the SQLite file lives on the
+# ephemeral filesystem and is recreated (tables + demo users + synthetic demo data) at every start.
+# For real persistence: change plan to "starter", uncomment the disk block and set DATABASE_PATH=/var/data/astra_vital.db
+services:
+  - type: web
+    name: astra-vital-academic
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: flask --app wsgi bootstrap && gunicorn -c gunicorn.conf.py wsgi:app
+    healthCheckPath: /login
+    envVars:
+      - key: FLASK_ENV_MODE
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/instance/astra_vital.db
+      - key: SEED_DEMO
+        value: "1"
+      - key: ADMIN_EMAIL
+        value: admin@nyxara.example
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: DOCTOR_EMAIL
+        value: doctor@nyxara.example
+      - key: DOCTOR_PASSWORD
+        generateValue: true
+      - key: OPERATOR_EMAIL
+        value: operator@nyxara.example
+      - key: OPERATOR_PASSWORD
+        generateValue: true
+    # disk:                       # paid instance types only
+    #   name: astra-vital-data
+    #   mountPath: /var/data
+    #   sizeGB: 1

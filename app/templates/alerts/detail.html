@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% from "_macros.html" import badge, field %}
+{% block title %}Alert #{{ a.id }}{% endblock %}{% block heading %}Alert #{{ a.id }}{% endblock %}
+{% block meta %}{{ badge(a.status) }}{{ badge(a.level) }}{% endblock %}
+{% block content %}<div class="grid g3"><div class="card span2"><h2>{{ a.title }}</h2>
+<div class="alert {{ a.level }}" style="background:transparent"><dl>
+<dt>1. What changed</dt><dd>{{ a.what_changed }}</dd>
+<dt>2. Indicator</dt><dd>{{ a.metric.replace('_',' ') }} · astronaut <a href="{{ url_for('crud.astronaut_detail', astronaut_id=a.astronaut_id) }}">{{ a.astronaut.code }}</a></dd>
+<dt>3. Why it matters</dt><dd>{{ a.why }}</dd>
+<dt>4. Suggested action</dt><dd>{{ a.action }}</dd>
+<dt>5. Medical team</dt><dd>{{ a.contact }}</dd></dl>
+<div class="src">Rule(s): {{ a.rule }} · Basis: {{ a.source_ref }}</div></div>
+<p class="hint">Generated {{ a.created_at.strftime('%Y-%m-%d %H:%M') }} UTC{% if a.measurement %} from measurement of {{ a.measurement.measured_at.strftime('%Y-%m-%d %H:%M') }}{% if a.measurement.is_synthetic %} (synthetic demo data){% endif %}{% endif %}. Educational prototype — not a diagnosis.</p></div>
+<div class="card"><h2>Review</h2>
+{% if a.reviewed_by %}<p class="muted">Last reviewed by {{ a.reviewed_by.full_name }} on {{ a.reviewed_at.strftime('%Y-%m-%d %H:%M') }} UTC.</p>{% endif %}
+{% if can('alerts.manage') %}<form method="post" novalidate>{{ form.hidden_tag() }}{{ field(form.status) }}{{ field(form.review_notes, rows=4) }}{{ form.submit(class="btn primary") }}</form>
+{% else %}<p class="muted">Status: {{ a.status }}. Only doctors and administrators can manage alerts.</p>{% if a.review_notes %}<p>{{ a.review_notes }}</p>{% endif %}{% endif %}</div></div>{% endblock %}

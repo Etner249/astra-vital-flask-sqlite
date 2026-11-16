@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% from "_macros.html" import badge %}
+{% block title %}Alerts{% endblock %}{% block heading %}Health alerts{% endblock %}
+{% block content %}
+<div class="card" style="margin-bottom:16px"><h2>How alerts are generated</h2><p class="muted" style="margin:0">Each saved measurement runs the ASTRA VITAL rule engine (ported from the original edition): documented reference thresholds (AHA, ACC/AHA, WHO, CDC) and a personal baseline rule (≥2 SD from the astronaut's first 7 values). Findings for one indicator are consolidated into one alert, stored in SQLite with its explanation, suggested action and when to contact the medical team. Doctors and administrators can acknowledge or resolve alerts.</p></div>
+<div class="tabs">{% for s in ['open','acknowledged','resolved','all'] %}<a class="tab {{ 'active' if status==s }}" href="{{ url_for('crud.alerts', status=s, level=level or None) }}">{{ s|capitalize }}</a>{% endfor %}
+<span style="width:12px"></span>{% for l in ['priority','followup','info'] %}<a class="tab {{ 'active' if level==l }}" href="{{ url_for('crud.alerts', status=status, level=(None if level==l else l)) }}">{{ {'priority':'Priority','followup':'Follow-up','info':'Informative'}[l] }}</a>{% endfor %}</div>
+{% for a in items %}<div class="alert {{ a.level }}"><div class="head" style="cursor:default"><div><a href="{{ url_for('crud.alert_detail', alert_id=a.id) }}"><b>{{ a.title }}</b></a><div class="muted" style="font-size:12.5px">{{ a.astronaut.code }} · {{ a.what_changed }} · generated {{ a.created_at.strftime('%Y-%m-%d %H:%M') }} UTC</div></div><div class="row">{{ badge(a.status) }}{{ badge(a.level) }}</div></div></div>
+{% else %}<div class="empty">No alerts in this view.</div>{% endfor %}
+{% endblock %}

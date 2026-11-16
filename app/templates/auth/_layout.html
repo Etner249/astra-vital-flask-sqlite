@@ -1,0 +1,11 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{% endblock %} · ASTRA VITAL</title>
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/astra-vital-favicon.svg') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/astra.css') }}"></head>
+<body><div class="auth-wrap"><div class="auth-card">
+<div class="brand"><img src="{{ url_for('static', filename='img/astra-vital-symbol.svg') }}" width="54" height="54" alt=""><div><b style="font-size:20px">ASTRA VITAL</b><small>INTELLIGENT ASTRONAUT HEALTH MONITORING</small><div class="edition">ACADEMIC EDITION · FLASK + SQLITE</div></div></div>
+<div class="card">
+{% with msgs = get_flashed_messages(with_categories=true) %}{% for cat, msg in msgs %}<div class="flash {{ cat }}" role="status">{{ msg }}</div>{% endfor %}{% endwith %}
+{% block content %}{% endblock %}</div>
+<p class="disclaimer" style="text-align:center">University adaptation of the ASTRA VITAL project (team NYXARA NOVA, NASA Space Apps Challenge 2026). Not an official NASA product. Educational prototype — not a medical device. Demo data is synthetic.</p>
+</div></div></body></html>

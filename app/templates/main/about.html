@@ -1,0 +1,7 @@
+{% extends "base.html" if current_user.is_authenticated else "auth/_layout.html" %}
+{% block title %}About{% endblock %}{% block heading %}About ASTRA VITAL — Academic Edition{% endblock %}
+{% block content %}<div class="card"><h2>ASTRA VITAL — Academic Edition (Python Flask + SQLite)</h2>
+<p>This is a university adaptation of <b>ASTRA VITAL — Intelligent Astronaut Health Monitoring System</b>, the project submitted by team <b>NYXARA NOVA</b> (Trujillo, Peru) to the NASA Space Apps Challenge 2026 ("Create Health Monitoring Software for Astronauts on Space Missions"). The NASA submission was the static web edition (<a href="https://etner249.github.io/astra-vital/">etner249.github.io/astra-vital</a>, source <a href="https://github.com/Etner249/astra-vital">github.com/Etner249/astra-vital</a>). This Flask edition was built afterwards for the university course and was <b>not</b> part of the NASA submission.</p>
+<p>Team: Etner Therry Rios Vasquez · Jeanfranco Alfredo Ibarra Kocfú · Darlin Saldaña Pinedo · Máximo Fabrizzio Espinoza Peche. <i>We control the unseen.</i></p>
+<p class="muted">Educational prototype — not a medical device; it does not diagnose. Demo astronauts and measurements are synthetic. Not an official NASA product. AI assistance (Claude, Anthropic) was used for coding and documentation; the rule engine contains no AI model.</p>
+<h3>Reference sources</h3>{% for k, s in sources.items() %}<div class="ref">{{ s }}</div>{% endfor %}</div>{% endblock %}

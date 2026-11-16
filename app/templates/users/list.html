@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% from "_macros.html" import delete_button %}
+{% block title %}Users{% endblock %}{% block heading %}Users and roles{% endblock %}
+{% block content %}<div class="card"><h2>Users ({{ items|length }}) <a class="btn primary" href="{{ url_for('crud.user_form') }}">+ New user</a></h2>
+<div class="tablewrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Active</th><th>Last sign-in</th><th></th></tr></thead><tbody>
+{% for u in items %}<tr><td>{{ u.full_name }}</td><td>{{ u.email }}</td><td><span class="tag">{{ u.role_label }}</span></td><td>{{ 'yes' if u.is_active_account else 'no' }}</td><td class="num">{{ u.last_login_at.strftime('%Y-%m-%d %H:%M') if u.last_login_at else '—' }}</td>
+<td class="row" style="gap:6px"><a class="btn" href="{{ url_for('crud.user_form', user_id=u.id) }}">Edit</a>{% if u.id != current_user.id %}{{ delete_button(url_for('crud.user_delete', user_id=u.id), delete_form) }}{% endif %}</td></tr>{% endfor %}</tbody></table></div></div>
+<div class="card" style="margin-top:16px"><h2>Permission matrix (enforced in the backend)</h2><table><thead><tr><th>Capability</th><th>Administrator</th><th>Doctor / Specialist</th><th>Operator</th></tr></thead><tbody>
+{% for label, perm in [('View dashboard, astronauts, missions, risks, NASA data','dashboard.view'),('Register measurements','measurements.create'),('Edit measurements','measurements.edit'),('Delete measurements','measurements.delete'),('Manage astronauts (create/edit/delete)','astronauts.manage'),('Manage missions','missions.manage'),('Review / manage alerts','alerts.manage'),('Reports and CSV export','reports.view'),('Manage users, audit log','users.manage')] %}
+<tr><td>{{ label }}</td>{% for r in ['admin','doctor','operator'] %}<td>{{ '✔' if r in PERMS[perm] else '—' }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>{% endblock %}

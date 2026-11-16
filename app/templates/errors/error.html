@@ -1,0 +1,5 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ code }} · ASTRA VITAL</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/astra.css') }}"></head>
+<body><div class="auth-wrap"><div class="card auth-card" style="text-align:center"><img src="{{ url_for('static', filename='img/astra-vital-symbol.svg') }}" width="54" height="54" alt="">
+<h2 style="font-size:28px;margin:10px 0">{{ code }}</h2><p>{{ title }}</p>
+<a class="btn" href="{{ url_for('main.dashboard') }}">Back to dashboard</a></div></div></body></html>

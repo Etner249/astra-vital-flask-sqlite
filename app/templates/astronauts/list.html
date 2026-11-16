@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% from "_macros.html" import badge, synth, delete_button %}
+{% block title %}Astronauts{% endblock %}{% block heading %}Astronauts{% endblock %}
+{% block content %}
+<div class="card"><h2>Crew registry ({{ items|length }}) {% if can('astronauts.manage') %}<a class="btn primary" href="{{ url_for('crud.astronaut_new') }}">+ Register astronaut</a>{% endif %}</h2>
+<form class="filters" method="get" style="margin-bottom:12px"><div class="field"><label for="q">Search code or name</label><input id="q" name="q" value="{{ q }}"></div><button class="btn" type="submit">Search</button>{% if q %}<a class="btn" href="{{ url_for('crud.astronauts') }}">Clear</a>{% endif %}</form>
+<div class="tablewrap"><table><thead><tr><th>Code</th><th>Name</th><th>Role</th><th>Mission</th><th>Status</th><th>Health</th><th>Data</th><th></th></tr></thead><tbody>
+{% for a in items %}<tr><td><a href="{{ url_for('crud.astronaut_detail', astronaut_id=a.id) }}"><b>{{ a.code }}</b></a></td><td>{{ a.full_name }}</td><td>{{ a.role_on_board or '—' }}</td><td>{{ a.mission.code if a.mission else '—' }}</td><td><span class="tag">{{ a.status }}</span></td><td>{{ badge(status[a.id]) }}</td><td>{{ synth(a.is_synthetic) }}</td>
+<td class="row" style="gap:6px"><a class="btn" href="{{ url_for('crud.astronaut_detail', astronaut_id=a.id) }}">View</a>{% if can('astronauts.manage') %}<a class="btn" href="{{ url_for('crud.astronaut_edit', astronaut_id=a.id) }}">Edit</a><a class="btn danger" href="{{ url_for('crud.astronaut_delete', astronaut_id=a.id) }}">Delete</a>{% endif %}</td></tr>
+{% else %}<tr><td colspan="8" class="dim">No astronauts found.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

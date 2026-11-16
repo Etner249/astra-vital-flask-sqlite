@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Mission Risk Center{% endblock %}{% block heading %}Mission Risk Center{% endblock %}
+{% block content %}<div class="card" style="margin-bottom:16px"><h2>NASA's five hazards of human spaceflight (RIDGE)</h2><p class="muted" style="margin:0">NASA's Human Research Program groups spaceflight risks into five hazards. ASTRA VITAL links the monitored vital signs to these hazards so the crew understands why a measurement matters. This module is educational context — not a diagnostic tool. Source: NASA HRP, <a href="https://www.nasa.gov/hrp/hazards/">nasa.gov/hrp/hazards</a>.</p></div>
+<div class="grid g2">{% for L, name, color, desc, risks, ind in hazards %}<div class="hazard"><div class="row" style="margin-bottom:8px"><div class="letter" style="color:{{ color }};border-color:{{ color }}66">{{ L }}</div><h3 style="margin:0">{{ name }}</h3></div>
+<p style="margin:0 0 8px">{{ desc }}</p><b style="font-size:12px;color:var(--muted)">RELATED HEALTH RISKS</b><ul>{% for r in risks %}<li>{{ r }}</li>{% endfor %}</ul>
+<b style="font-size:12px;color:var(--muted)">HOW ASTRA VITAL RELATES</b><p style="margin:4px 0 0">{{ ind }}</p></div>{% endfor %}</div>{% endblock %}

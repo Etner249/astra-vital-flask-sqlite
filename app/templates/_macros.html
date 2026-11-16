@@ -1,0 +1,13 @@
+{% macro icon(d) %}<svg viewBox="0 0 24 24">{{ d|safe }}</svg>{% endmacro %}
+{% macro badge(level, text=None) -%}
+{%- set cls = {'priority':'b-priority','followup':'b-followup','info':'b-info','nominal':'b-ok','ok':'b-ok','open':'b-followup','acknowledged':'b-info','resolved':'b-ok'}.get(level, 'b-info') -%}
+{%- set lbl = {'priority':'Priority','followup':'Follow-up','info':'Informative','nominal':'Nominal','ok':'Nominal','open':'Open','acknowledged':'Acknowledged','resolved':'Resolved'}.get(level, level) -%}
+<span class="badge {{ cls }}">{{ text or lbl }}</span>
+{%- endmacro %}
+{% macro field(f, cls='') -%}
+<div class="field {{ cls }}">{{ f.label() }}{{ f(**kwargs) }}{% for e in f.errors %}<span class="err">{{ e }}</span>{% endfor %}</div>
+{%- endmacro %}
+{% macro synth(flag) %}{% if flag %}<span class="badge b-syn">synthetic</span>{% else %}<span class="badge b-real">recorded</span>{% endif %}{% endmacro %}
+{% macro delete_button(action, form, label='Delete', confirm='Delete this record? This cannot be undone.', next=None) -%}
+<form method="post" action="{{ action }}" class="inline" data-confirm="{{ confirm }}">{{ form.hidden_tag() }}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}<button class="btn danger" type="submit">{{ label }}</button></form>
+{%- endmacro %}

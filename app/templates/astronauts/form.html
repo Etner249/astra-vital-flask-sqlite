@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_macros.html" import field %}
+{% block title %}{{ title }}{% endblock %}{% block heading %}{{ title }}{% endblock %}
+{% block content %}<div class="card" style="max-width:820px"><h2>Astronaut profile</h2>
+<form method="post" novalidate>{{ form.hidden_tag() }}<div class="form-grid">
+{{ field(form.code, placeholder="AV-CREW-05") }}{{ field(form.full_name) }}{{ field(form.demo_age) }}{{ field(form.role_on_board) }}{{ field(form.mission_id) }}{{ field(form.status) }}{{ field(form.notes, cls='full', rows=3) }}</div>
+<div class="hint">Use fictional or anonymized data only. Do not enter real medical information of identifiable people.</div>
+<div class="row" style="margin-top:12px">{{ form.submit(class="btn primary") }}<a class="btn" href="{{ url_for('crud.astronaut_detail', astronaut_id=a.id) if a else url_for('crud.astronauts') }}">Cancel</a></div></form></div>{% endblock %}
