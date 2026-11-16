@@ -1,6 +1,6 @@
 {
   "university": "Universidad Privada de Trujillo (UPRIT)",
-  "faculty": null,
+  "faculty": "Facultad de Ingeniería de Sistemas e Inteligencia Artificial",
   "course": null,
   "professor": null,
   "cycle_section": null,
@@ -11,5 +11,6 @@
     "Jeanfranco Alfredo Ibarra Kocfú",
     "Darlin Saldaña Pinedo",
     "Máximo Fabrizzio Espinoza Peche"
-  ]
+  ],
+  "certificate": null
 }

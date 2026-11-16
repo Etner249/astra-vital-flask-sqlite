@@ -1,0 +1,85 @@
+PASS  Entry URL shows the NASA Evaluator Access login  — server ready in 0.3s
+PASS  Three demo accounts served by the API  — admin.demo@astravital.example, medico.demo@astravital.example, operador.demo@astravital.example
+PASS  Public-demo warning visible
+PASS  Project briefing has 15 expandable sections  — Project overview, The challenge, Our solution, Nine health indicators, Application modules, Health intelligence engine, NASA scientific data, Offline-first operation, Technical architecture, Validation and testing, What is real and what is simulated, Limitations and scientific responsibility, Team NYXARA NOVA, AI disclosure, Project links
+PASS  Login + briefing text is English only
+PASS  Briefing states: not a certified medical device
+PASS  Briefing states: 36-hour missing-data window
+PASS  Briefing states: not continuous in-flight vital signs
+PASS  Briefing states: not endorsed or validated by NASA
+PASS  Briefing states: No AI model runs inside ASTRA VITAL
+PASS  Briefing states: without persistent disk storage
+PASS  Briefing external links are well-formed  — https://etner249.github.io/astra-vital/ https://etner249.github.io/astra-vital/nasa-2026/ https://github.com/Etner249/astra-vital https://github.com/Etner249/astra-vital-flask-sqlite https://osdr.nasa.gov/bio/repo/data/studies/OSD-569 https://osdr.nasa.gov/bio/repo/data/studies/OSD-575 https://www.nasa.gov/hrp/hazards/ https://youtu.be/lxITVao2RmQ https://youtu.be/sz9qzXasEKc
+PASS  Password visibility toggle shows the password
+PASS  Password visibility toggle hides it again
+PASS  Wrong credentials rejected (English error)
+PASS  [operator] signs in and sees the original shell  — Demo Operador (cuenta pública) | Operator · PUBLIC DEMO | operador.demo@astravital.example | Sign out
+PASS  [operator] navigation matches role  — dashboard,log,body,alerts,risk,nasa,profile,sync,ground,crew,records,review,about
+PASS  [operator] original module 'dashboard' renders
+PASS  [operator] original module 'log' renders
+PASS  [operator] original module 'body' renders
+PASS  [operator] original module 'alerts' renders
+PASS  [operator] original module 'risk' renders
+PASS  [operator] original module 'nasa' renders
+PASS  [operator] original module 'profile' renders
+PASS  [operator] original module 'sync' renders
+PASS  [operator] original module 'ground' renders
+PASS  [operator] original module 'about' renders
+PASS  [operator] no JS errors in the 10 original modules
+PASS  [operator] #users not reachable
+PASS  [operator] Log Measurement stored in SQLite via API  — Saved and confirmed by the ground store (SQLite on Render). 1 alert(s) for Heart rate — see Health Intelligence.
+PASS  [operator] record visible in Measurements Database
+PASS  [operator] no edit/delete buttons
+PASS  [operator] profile is read-only
+PASS  [operator] with LOS the record stays queued on the device  — Saved locally and queued for sync (LOS). 1 alert(s) for Sleep duration — see Hea
+PASS  [operator] queue shows 1 pending record
+PASS  [operator] AOS sync sends the queued record  — Sync finished: 1 sent, 0 still queued.
+PASS  [operator] session survives page reload
+PASS  [operator] sign out returns to login (English notice)
+PASS  [doctor] signs in and sees the original shell  — Demo Médico (cuenta pública) | Doctor / Specialist · PUBLIC DEMO | medico.demo@astravital.example | Sign out
+PASS  [doctor] navigation matches role  — dashboard,log,body,alerts,risk,nasa,profile,sync,ground,crew,records,review,about
+PASS  [doctor] original module 'dashboard' renders
+PASS  [doctor] original module 'log' renders
+PASS  [doctor] original module 'body' renders
+PASS  [doctor] original module 'alerts' renders
+PASS  [doctor] original module 'risk' renders
+PASS  [doctor] original module 'nasa' renders
+PASS  [doctor] original module 'profile' renders
+PASS  [doctor] original module 'sync' renders
+PASS  [doctor] original module 'ground' renders
+PASS  [doctor] original module 'about' renders
+PASS  [doctor] no JS errors in the 10 original modules
+PASS  [doctor] #users not reachable
+PASS  [doctor] can review stored alerts
+PASS  [doctor] alert review saved  — Review saved in the ground database.
+PASS  [doctor] edits a measurement (alerts recalculated)  — Measurement updated; alerts recalculated on the server.
+PASS  [doctor] has no delete buttons
+PASS  [doctor] Ground Console lists alerts stored in SQLite  — ALERTS STORED ON THE GROUND (SQLITE) | RENDER API | Heart rate: change from personal baseline | AV-DEMO-01 · Measured 76 bpm on 2026-11-16 17:44 UTC. | open | Follow-up | S
+PASS  [doctor] sign out returns to login (English notice)
+PASS  [admin] signs in and sees the original shell  — Demo Administrador (cuenta pública) | Administrator · PUBLIC DEMO | admin.demo@astravital.example | Sign out
+PASS  [admin] navigation matches role  — dashboard,log,body,alerts,risk,nasa,profile,sync,ground,crew,records,review,users,audit,about
+PASS  [admin] original module 'dashboard' renders
+PASS  [admin] original module 'log' renders
+PASS  [admin] original module 'body' renders
+PASS  [admin] original module 'alerts' renders
+PASS  [admin] original module 'risk' renders
+PASS  [admin] original module 'nasa' renders
+PASS  [admin] original module 'profile' renders
+PASS  [admin] original module 'sync' renders
+PASS  [admin] original module 'ground' renders
+PASS  [admin] original module 'about' renders
+PASS  [admin] no JS errors in the 10 original modules
+PASS  [admin] creates astronaut  — Astronaut AV-E2E-124443 saved.
+PASS  [admin] edits astronaut  — Astronaut AV-E2E-124443 saved.
+PASS  [admin] deletes astronaut it created  — Astronaut AV-E2E-124443 and related records deleted.
+PASS  [admin] creates mission  — Mission AV-M-124443 saved.
+PASS  [admin] deletes mission it created  — Mission AV-M-124443 deleted.
+PASS  [admin demo] cannot delete synthetic reference data  — Public demo accounts cannot delete the synthetic reference data. Create a new record and delete it to test the operation
+PASS  [admin] deletes an evaluator-created measurement  — Measurement deleted from the ground database.
+PASS  [admin demo] user management is read-only
+PASS  [admin demo] private admin e-mail is masked
+PASS  [admin] audit log loads (IPs hidden for demo)
+PASS  [admin] sign out returns to login (English notice)
+PASS  /nasa-2026/ opens the submitted version (no login, original app)
+PASS  No horizontal overflow on mobile (390 px) and tablet (820 px)
+{"checks": 84, "passed": 84, "failed": 0, "js_errors": []}

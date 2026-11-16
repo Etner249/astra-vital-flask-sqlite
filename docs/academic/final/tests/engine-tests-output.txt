@@ -1,0 +1,12 @@
+ok - rejects implausible and inconsistent values
+ok - SpO2 < 90% is priority
+ok - fever >= 38.0 C is priority, 37.0 is not
+ok - three short sleeps -> follow-up
+ok - baseline deviation detected (z >= 2)
+ok - stable data -> nominal
+ok - missing data alert after 36 h
+ok - sustained stage-1 blood pressure -> follow-up
+ok - every alert explains what, why, action and contact
+ok - sync merge: adds new, updates newer version, reports conflicts
+
+10 tests passed

@@ -1,0 +1,7 @@
+digraph G { rankdir=TB; graph [fontname="Helvetica", pad=0.3, ranksep=0.4]; node [fontname="Helvetica", fontsize=10.5, shape=box, style="rounded,filled", fillcolor="#eef4fb", color="#1e6fd9"]; edge [fontname="Helvetica", fontsize=9];
+ log [label="Log Measurement\nvalidación de calidad\n(checkQuality)"]; q [label="Cola local\n(localStorage)", shape=cylinder, fillcolor="#f2f2f2"];
+ link [label="Enlace con Tierra\nAOS / LOS\n(SIMULADO)", shape=diamond, fillcolor="#fff7e6", color="#c08a00"];
+ api [label="POST /api/v1/measurements\nlotes de 5"]; db [label="SQLite\nhealth_measurements\nhealth_alerts", shape=cylinder, fillcolor="#e8f8ef", color="#2f9e66"];
+ gc [label="Ground Console\nAlert Review"];
+ log->q->link; link->q [label="LOS: queda en cola", style=dashed]; link->api [label="AOS"]; api->db [label="201 + alertas"]; api->q [label="422: rechazado y registrado\nred caída: pasa a LOS", style=dashed]; db->gc;
+}

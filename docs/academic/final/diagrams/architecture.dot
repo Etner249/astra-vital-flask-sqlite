@@ -1,0 +1,24 @@
+digraph G {
+  rankdir=TB; graph [fontname="Helvetica", bgcolor="white", pad=0.3, nodesep=0.35, ranksep=0.5];
+  node [fontname="Helvetica", fontsize=11, shape=box, style="rounded,filled", fillcolor="#eef4fb", color="#1e6fd9"];
+  edge [fontname="Helvetica", fontsize=9, color="#3a4a62"];
+  user [label="Evaluador / docente\n(navegador web)", shape=oval, fillcolor="#fff7e6", color="#c08a00"];
+  subgraph cluster_gh { label="GitHub Pages — https://etner249.github.io/astra-vital/"; style="rounded"; color="#36a3b8"; fontname="Helvetica";
+    spa [label="SPA ASTRA VITAL (index.html)\nHTML5 · CSS3 · JavaScript · SVG\n10 módulos originales + 5 académicos\nLogin NASA Evaluator Access"];
+    ls  [label="localStorage\n(cola offline por usuario/astronauta)", shape=cylinder, fillcolor="#f2f2f2"];
+    ss  [label="sessionStorage\n(token Bearer)", shape=cylinder, fillcolor="#f2f2f2"];
+    nasa [label="/nasa-2026/\ncopia congelada de la entrega NASA", fillcolor="#f5f5f5", color="#888888"];
+  }
+  subgraph cluster_render { label="Render (plan Free) — https://astra-vital-academic.onrender.com"; style="rounded"; color="#7a5af8"; fontname="Helvetica";
+    gun [label="Gunicorn (2 workers)"];
+    flask [label="Flask app factory\nblueprints: api (/api/v1) · auth · main · crud\nFlask-Login · Flask-WTF · decoradores de permisos"];
+    eng [label="Motor de reglas (engine.py)\n+ services.generate_alerts()"];
+    orm [label="Flask-SQLAlchemy ORM"];
+    db [label="SQLite (archivo efímero)\n7 tablas", shape=cylinder, fillcolor="#e8f8ef", color="#2f9e66"];
+  }
+  user -> spa [label="HTTPS"];
+  spa -> ls; spa -> ss;
+  spa -> gun [label="HTTPS JSON\nAuthorization: Bearer\nCORS: solo etner249.github.io"];
+  gun -> flask -> orm -> db; flask -> eng -> orm;
+  user -> flask [label="UI Flask/Jinja\n(/login, /dashboard…)", style=dashed];
+}

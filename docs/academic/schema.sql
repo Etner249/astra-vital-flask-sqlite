@@ -1,6 +1,19 @@
 -- Real schema extracted from the SQLite database created by `flask bootstrap` (SQLAlchemy create_all)
 PRAGMA foreign_keys=ON;
 
+CREATE TABLE api_tokens (
+	id INTEGER NOT NULL, 
+	user_id INTEGER NOT NULL, 
+	token_hash VARCHAR(64) NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	expires_at DATETIME NOT NULL, 
+	revoked_at DATETIME, 
+	last_used_at DATETIME, 
+	CONSTRAINT pk_api_tokens PRIMARY KEY (id), 
+	CONSTRAINT fk_api_tokens_user_id_users FOREIGN KEY(user_id) REFERENCES users (id) ON DELETE CASCADE, 
+	CONSTRAINT uq_api_tokens_token_hash UNIQUE (token_hash)
+);
+
 CREATE TABLE astronauts (
 	id INTEGER NOT NULL, 
 	code VARCHAR(30) NOT NULL, 
@@ -70,6 +83,11 @@ CREATE TABLE health_measurements (
 	spo2 FLOAT, 
 	temperature FLOAT, 
 	respiratory_rate INTEGER, 
+	sleep_hours FLOAT, 
+	exercise_min INTEGER, 
+	fatigue INTEGER, 
+	mood INTEGER, 
+	glucose INTEGER, 
 	notes TEXT, 
 	source VARCHAR(40) NOT NULL, 
 	is_synthetic BOOLEAN NOT NULL, 
@@ -83,6 +101,11 @@ CREATE TABLE health_measurements (
 	CONSTRAINT ck_health_measurements_spo2_range CHECK (spo2 IS NULL OR spo2 BETWEEN 50 AND 100), 
 	CONSTRAINT ck_health_measurements_temp_range CHECK (temperature IS NULL OR temperature BETWEEN 32 AND 43), 
 	CONSTRAINT ck_health_measurements_rr_range CHECK (respiratory_rate IS NULL OR respiratory_rate BETWEEN 4 AND 60), 
+	CONSTRAINT ck_health_measurements_sleep_range CHECK (sleep_hours IS NULL OR sleep_hours BETWEEN 0 AND 16), 
+	CONSTRAINT ck_health_measurements_exercise_range CHECK (exercise_min IS NULL OR exercise_min BETWEEN 0 AND 400), 
+	CONSTRAINT ck_health_measurements_fatigue_range CHECK (fatigue IS NULL OR fatigue BETWEEN 1 AND 7), 
+	CONSTRAINT ck_health_measurements_mood_range CHECK (mood IS NULL OR mood BETWEEN 1 AND 5), 
+	CONSTRAINT ck_health_measurements_glucose_range CHECK (glucose IS NULL OR glucose BETWEEN 20 AND 600), 
 	CONSTRAINT fk_health_measurements_astronaut_id_astronauts FOREIGN KEY(astronaut_id) REFERENCES astronauts (id) ON DELETE CASCADE, 
 	CONSTRAINT fk_health_measurements_recorded_by_id_users FOREIGN KEY(recorded_by_id) REFERENCES users (id) ON DELETE SET NULL
 );
@@ -121,6 +144,8 @@ CREATE TABLE users (
 );
 
 CREATE INDEX ix_alerts_status_level ON health_alerts (status, level);
+
+CREATE INDEX ix_api_tokens_user_id ON api_tokens (user_id);
 
 CREATE UNIQUE INDEX ix_astronauts_code ON astronauts (code);
 

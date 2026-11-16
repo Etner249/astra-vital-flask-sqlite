@@ -1,0 +1,14 @@
+digraph G { rankdir=TB; graph [fontname="Helvetica", pad=0.3, nodesep=0.3, ranksep=0.35]; node [fontname="Helvetica", fontsize=10.5, shape=box, style="rounded,filled", fillcolor="#eef4fb", color="#1e6fd9"]; edge [fontname="Helvetica", fontsize=9];
+ a [label="1. GET /api/v1/health y /demo-accounts\n(público; indica si el servidor despertó)"];
+ b [label="2. POST /api/v1/auth/login {email, password}\nlímite 10 fallos / 5 min por IP"];
+ c [label="3. Verifica hash scrypt (Werkzeug) y cuenta activa", shape=diamond, fillcolor="#fff7e6", color="#c08a00"];
+ d [label="401 «Invalid email or password»\n+ registro login_failed en audit_logs", fillcolor="#fdecec", color="#c0392b"];
+ e [label="4. Genera token aleatorio (256 bits)\nguarda SHA-256 en api_tokens · expira en 8 h\nregistra login en audit_logs"];
+ f [label="5. Frontend guarda token en sessionStorage\nGET /auth/me → rol y lista de permisos"];
+ g [label="6. Cada petición: Authorization: Bearer <token>\nbefore_request valida origen CORS, token, expiración y cuenta"];
+ h [label="7. Ruta: _require(permiso) + demo_forbidden()\n403 si el rol no tiene permiso", shape=diamond, fillcolor="#fff7e6", color="#c08a00"];
+ i [label="8. Operación CRUD en SQLite + generate_alerts()\n+ log_action() en audit_logs", fillcolor="#e8f8ef", color="#2f9e66"];
+ j [label="9. POST /auth/logout → revoked_at\n(o 401 si el servidor se reinició → vuelve al login)"];
+ a->b->c; c->d [label="no"]; c->e [label="sí"]; e->f->g->h; h->i [label="permitido"]; h->d2 [label="denegado"]; i->j;
+ d2 [label="403 JSON con explicación", fillcolor="#fdecec", color="#c0392b"];
+}
