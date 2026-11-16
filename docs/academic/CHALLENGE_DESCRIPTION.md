@@ -3,7 +3,7 @@
 **Reto:** *Create Health Monitoring Software for Astronauts on Space Missions* (dificultad intermedia; temas: exploración humana, software, exploración espacial).
 Página: https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/
 
-## Resumen del reto (paráfrasis)
+## Resumen del reto
 Las misiones de larga duración exponen a los astronautas a radiación espacial, aislamiento y confinamiento, gravedad alterada y un ambiente cerrado hostil, lo que puede provocar cambios inmunes, pérdida ósea, eventos cardiovasculares y problemas de salud conductual. Lejos de la Tierra, los astronautas asumen gran parte de la responsabilidad de detectar estos cambios. El reto pide un software visual de monitoreo que recoja indicadores de salud y permita al astronauta evaluar y actuar sobre su estado, con explicaciones sencillas, códigos de color, gráficos de evolución y, opcionalmente, gamificación y figuras interactivas del cuerpo.
 
 ## Los cinco peligros del Programa de Investigación Humana (HRP) de la NASA
