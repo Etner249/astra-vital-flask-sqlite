@@ -1,7 +1,12 @@
 # Integración GitHub Pages ↔ Render (rama `api-integration`)
 
 **Objetivo:** que https://etner249.github.io/astra-vital/ (URL enviada a la NASA) abra ASTRA VITAL con *NASA Evaluator Access* y use este backend Flask + SQLite como “ground store”.
-**Estado (16/11/2026):** implementado y verificado en entorno de vista previa. **No publicado en `main`** de ninguno de los dos repositorios (pendiente de autorización).
+**Estado (16/11/2026, 12:20 hora de Lima):** **publicado en producción** con autorización del equipo.
+- `astra-vital-flask-sqlite` `main` = `8d6bd9b` → desplegado en Render `astra-vital-academic` (log: "Demo accounts ready: 3 created"; `GET /api/v1/health` → `status: ok`).
+- `astra-vital` `main` = `d32e52c` → GitHub Pages (`pages-build-deployment` #4 OK). https://etner249.github.io/astra-vital/ muestra NASA Evaluator Access y usa `https://astra-vital-academic.onrender.com/api/v1`.
+- Respaldo: rama `backup/nasa-submission-2026-11-15` y tag/release `nasa-submission-2026-11-15` → `8df773b`; `/nasa-2026/` con SHA-256 idéntico.
+- Verificado en la URL oficial: Operador (10 módulos, 9 indicadores guardados en SQLite, cola LOS→AOS, sin edición/borrado, perfil solo lectura, `#users` bloqueado) y Administrador (10 módulos + 5 nuevos, CRUD de astronautas y misiones, bloqueo de borrado de datos sintéticos, usuarios solo lectura, auditoría con IP oculta); 0 errores JS (`evidence/25*`). El rol Médico se verificó en la vista previa con el mismo código y en las pruebas automáticas.
+- Entornos de vista previa conservados (`astra-vital-preview`, `astra-vital-api-preview`).
 
 ## Ramas y servicios
 | Pieza | Ubicación |
@@ -27,8 +32,11 @@
 - Remoto (GitHub Pages → Render preview), con las 3 cuentas en el navegador: 10 módulos originales por rol, permisos (403/ocultos), log + sincronización, cola LOS→AOS, revisión de alertas, edición, CRUD de astronautas y misiones, bloqueo de borrado de datos sintéticos, usuarios solo lectura, auditoría con IP oculta, 0 errores JS (`evidence/24*`).
 - Persistencia: los registros creados por el operador fueron visibles para médico y administrador en otras sesiones (SQLite compartido). Tras **reiniciar** el servicio, el log muestra “No SQLite database… creating a new one” y el frontend vuelve al login con “Tu sesión expiró o el servidor se reinició” (`evidence/24h`, `24i`).
 
-## Pasos para publicar (requieren autorización)
+## Pasos de publicación (ejecutados el 16/11/2026)
 1. Merge `api-integration` → `main` (este repo) y deploy de `astra-vital-academic` (añade la API; la UI Flask no cambia).
 2. Merge `academic-integration` → `main` en `astra-vital` (index.html ya apunta a `https://astra-vital-academic.onrender.com/api/v1`).
 3. Verificar https://etner249.github.io/astra-vital/ y `/nasa-2026/`.
 4. Opcional: borrar `astra-vital-preview` y el servicio `astra-vital-api-preview`.
+
+## Limitación de persistencia (Render gratuito)
+SQLite vive en el disco efímero de la instancia gratuita: **cada reinicio, redespliegue o suspensión por inactividad (~15 min sin tráfico) borra la base** y `flask bootstrap` la recrea con los datos sintéticos y las 3 cuentas demo. Las sesiones abiertas vuelven al login ("Tu sesión expiró o el servidor se reinició"). Los registros pendientes en la cola del navegador no se pierden: se reenvían en la siguiente sincronización. Para persistencia real: plan de pago con Persistent Disk (`DATABASE_PATH=/var/data/astra_vital.db`) o una base gestionada.
